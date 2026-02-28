@@ -1,0 +1,38 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-blue-50: #eff6ff;
+  --color-blue-100: #dbeafe;
+  --color-blue-500: #3b82f6;
+  --color-blue-600: #2563eb;
+  
+  --color-green-50: #f0fdf4;
+  --color-green-100: #dcfce7;
+  --color-green-500: #22c55e;
+  --color-green-600: #16a34a;
+
+  --font-sans: "Inter", "system-ui", "sans-serif";
+}
+
+/* Custom Utilities for Hide Scrollbar but allow scrolling */
+.scrollbar-hide {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+
+/* Safe area padding for mobile bottoms */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 20px);
+}
+
+.safe-area-pb {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Soft shadows */
+.shadow-top {
+  box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.05);
+}
