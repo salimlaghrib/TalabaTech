@@ -46,39 +46,37 @@ export default function Profile() {
   return (
     <div className="min-h-screen bg-gray-50 pb-24">
       {/* Profile header */}
-      <div className="bg-gradient-to-br from-blue-600 to-indigo-700 px-6 pt-8 pb-10 relative">
+      <div className="bg-blue-600 px-6 pt-8 pb-20 rounded-b-[2rem] relative">
         <button className="absolute top-4 right-4 w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
           <Settings size={20} className="text-white" />
         </button>
-        <div className="flex items-center space-x-4">
-          <div className="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center text-white text-2xl font-bold border-3 border-white/40">
+        <div className="flex flex-col items-center text-center pt-2">
+          <div className="w-24 h-24 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center text-white text-3xl font-bold border-4 border-white/40 shadow-lg mb-3">
             {(userName || "U").charAt(0).toUpperCase()}
           </div>
-          <div>
-            <h1 className="text-xl font-bold text-white">{userName || "Utilisateur"}</h1>
-            <span className={`inline-block mt-1 px-3 py-1 rounded-full text-xs font-bold ${
-              isStudent ? "bg-yellow-400 text-yellow-900" : "bg-emerald-400 text-emerald-900"
-            }`}>
-              {isStudent ? "Étudiant" : "Prestataire"}
-            </span>
-          </div>
+          <h1 className="text-xl font-bold text-white">{userName || "Utilisateur"}</h1>
+          <span className={`inline-block mt-2 px-4 py-1.5 rounded-full text-xs font-bold ${
+            isStudent ? "bg-yellow-400 text-yellow-900" : "bg-emerald-400 text-emerald-900"
+          }`}>
+            {isStudent ? "Étudiant" : "Prestataire"}
+          </span>
         </div>
       </div>
 
-      <div className="px-6 -mt-4">
+      <div className="px-5 -mt-6">
         {/* Stats */}
-        <div className="bg-white rounded-2xl p-4 shadow-md mb-5 grid grid-cols-3 gap-4 text-center">
-          <div>
-            <p className="text-lg font-bold text-blue-600">{announcements.length}</p>
-            <p className="text-[10px] text-slate-400 font-semibold">Annonces</p>
+        <div className="bg-white rounded-2xl p-5 shadow-md mb-5 grid grid-cols-3 gap-4 text-center border border-gray-100">
+          <div className="flex flex-col items-center">
+            <p className="text-xl font-extrabold text-blue-600">{announcements.length}</p>
+            <p className="text-[11px] text-slate-400 font-semibold mt-0.5">Annonces</p>
           </div>
-          <div>
-            <p className="text-lg font-bold text-blue-600">{announcements.reduce((sum, a) => sum + a.views, 0)}</p>
-            <p className="text-[10px] text-slate-400 font-semibold">Vues totales</p>
+          <div className="flex flex-col items-center border-x border-gray-100">
+            <p className="text-xl font-extrabold text-blue-600">{announcements.reduce((sum, a) => sum + a.views, 0)}</p>
+            <p className="text-[11px] text-slate-400 font-semibold mt-0.5">Vues totales</p>
           </div>
-          <div>
-            <p className="text-lg font-bold text-blue-600">5</p>
-            <p className="text-[10px] text-slate-400 font-semibold">Messages</p>
+          <div className="flex flex-col items-center">
+            <p className="text-xl font-extrabold text-blue-600">5</p>
+            <p className="text-[11px] text-slate-400 font-semibold mt-0.5">Messages</p>
           </div>
         </div>
 

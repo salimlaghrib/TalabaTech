@@ -152,7 +152,7 @@ export default function AnnouncementDetail() {
           {/* Tags */}
           <div className="flex flex-wrap gap-2 mb-5">
             {a.furnished && <span className="px-3 py-1.5 bg-blue-50 rounded-full text-xs font-medium text-blue-600">✓ Meublé</span>}
-            {a.gender && <span className="px-3 py-1.5 bg-purple-50 rounded-full text-xs font-medium text-purple-600">{a.gender}</span>}
+            {a.gender && a.gender !== "Mixte" && <span className="px-3 py-1.5 bg-purple-50 rounded-full text-xs font-medium text-purple-600">{a.gender}</span>}
             {a.tags.map(t => <span key={t} className="px-3 py-1.5 bg-gray-50 rounded-full text-xs font-medium text-slate-600 border border-gray-100">{t}</span>)}
           </div>
 
@@ -198,90 +198,113 @@ export default function AnnouncementDetail() {
   return (
     <div className="min-h-screen bg-gray-50 pb-28">
       {/* Header */}
-      <div className="bg-gradient-to-br from-blue-600 to-indigo-700 px-6 pt-6 pb-10 relative">
-        <button onClick={() => navigate(-1)} className="absolute top-4 left-4 w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
-          <ArrowLeft size={20} className="text-white" />
-        </button>
-        <div className="text-center pt-8">
-          <img src={`https://images.unsplash.com/${a.authorImage}`} alt={a.authorName} className="w-24 h-24 rounded-full mx-auto object-cover border-4 border-white shadow-lg mb-3" />
-          <h1 className="text-xl font-bold text-white">{a.authorName}</h1>
-          <p className="text-blue-200 text-sm">{a.university} • {a.studyField}</p>
-          <span className={`inline-block mt-2 px-3 py-1 rounded-full text-xs font-bold ${badge.bg}`}>{badge.label}</span>
+      <div className="relative">
+        <div className="bg-blue-600 px-6 pt-6 pb-16 rounded-b-[2.5rem] shadow-lg">
+          <button onClick={() => navigate(-1)} className="absolute top-4 left-4 w-10 h-10 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center hover:bg-white/30 transition-colors">
+            <ArrowLeft size={20} className="text-white" />
+          </button>
+          <div className="absolute top-4 right-4 flex space-x-2">
+            <button className="w-10 h-10 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center hover:bg-white/30 transition-colors">
+              <Heart size={18} className="text-white" />
+            </button>
+            <button className="w-10 h-10 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center hover:bg-white/30 transition-colors">
+              <Share2 size={18} className="text-white" />
+            </button>
+          </div>
+          <div className="text-center pt-8">
+            <div className="relative inline-block">
+              <img src={`https://images.unsplash.com/${a.authorImage}`} alt={a.authorName} className="w-28 h-28 rounded-full mx-auto object-cover border-4 border-white/80 shadow-xl" />
+              <div className="absolute -bottom-1 -right-1 w-7 h-7 bg-green-400 border-3 border-white rounded-full" />
+            </div>
+            <h1 className="text-2xl font-extrabold text-white mt-3 tracking-tight">{a.authorName}</h1>
+            <p className="text-blue-200 text-sm font-medium mt-0.5">{a.university} • {a.studyField}</p>
+            <span className={`inline-block mt-3 px-4 py-1.5 rounded-full text-xs font-bold shadow-sm ${badge.bg}`}>{badge.label}</span>
+          </div>
         </div>
       </div>
 
-      <div className="px-6 -mt-4">
-        {/* Budget card */}
-        <div className="bg-white rounded-2xl p-4 shadow-md mb-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-xs text-slate-400 uppercase tracking-wider font-semibold">Budget maximum</p>
-              <p className="text-lg font-bold text-green-600">{a.price}</p>
-            </div>
-            <div className="text-right">
-              <p className="text-xs text-slate-400 uppercase tracking-wider font-semibold">Durée</p>
-              <p className="text-sm font-bold text-slate-900">{a.duration}</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Search info */}
-        <div className="bg-white rounded-2xl p-4 shadow-sm mb-4 border border-gray-100">
-          <h3 className="font-bold text-slate-900 mb-3">Ce que je cherche</h3>
-          <div className="space-y-2">
+      <div className="px-5 -mt-5 space-y-4">
+        {/* Search info card */}
+        <div className="bg-white rounded-2xl p-5 shadow-md border border-gray-100/80">
+          <h3 className="font-bold text-slate-900 mb-4 text-base flex items-center gap-2">
+            <span className="w-1 h-5 bg-blue-600 rounded-full inline-block" />
+            Ce que je cherche
+          </h3>
+          <div className="space-y-3">
             <div className="flex items-center text-sm">
-              <MapPin size={16} className="text-blue-500 mr-2" />
-              <span className="text-slate-600">Ville : <strong>{a.city}</strong></span>
+              <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center mr-3">
+                <MapPin size={16} className="text-blue-500" />
+              </div>
+              <span className="text-slate-500">Ville :</span>
+              <span className="ml-1 font-semibold text-slate-800">{a.city}</span>
             </div>
             <div className="flex items-center text-sm">
-              <BedDouble size={16} className="text-blue-500 mr-2" />
-              <span className="text-slate-600">Type : <strong>{a.housingType}</strong></span>
+              <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center mr-3">
+                <BedDouble size={16} className="text-blue-500" />
+              </div>
+              <span className="text-slate-500">Type :</span>
+              <span className="ml-1 font-semibold text-slate-800">{a.housingType}</span>
             </div>
             <div className="flex items-center text-sm">
-              <Users size={16} className="text-blue-500 mr-2" />
-              <span className="text-slate-600">Préférence : <strong>{a.gender}</strong></span>
+              <div className="w-8 h-8 rounded-lg bg-purple-50 flex items-center justify-center mr-3">
+                <Users size={16} className="text-purple-500" />
+              </div>
+              <span className="text-slate-500">Préférence :</span>
+              <span className="ml-1 font-semibold text-slate-800">{a.gender}</span>
             </div>
             <div className="flex items-center text-sm">
-              <Calendar size={16} className="text-blue-500 mr-2" />
-              <span className="text-slate-600">Durée : <strong>{a.duration}</strong></span>
+              <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center mr-3">
+                <Calendar size={16} className="text-indigo-500" />
+              </div>
+              <span className="text-slate-500">Durée :</span>
+              <span className="ml-1 font-semibold text-slate-800">{a.duration}</span>
             </div>
           </div>
         </div>
 
         {/* Preferences */}
-        <div className="bg-white rounded-2xl p-4 shadow-sm mb-4 border border-gray-100">
-          <h3 className="font-bold text-slate-900 mb-2">Préférences</h3>
+        <div className="bg-white rounded-2xl p-5 shadow-md border border-gray-100/80">
+          <h3 className="font-bold text-slate-900 mb-3 text-base flex items-center gap-2">
+            <span className="w-1 h-5 bg-indigo-500 rounded-full inline-block" />
+            Préférences
+          </h3>
           <div className="flex flex-wrap gap-2">
             {a.tags.map(t => (
-              <span key={t} className="px-3 py-1.5 bg-blue-50 rounded-full text-xs font-medium text-blue-600">{t}</span>
+              <span key={t} className="px-4 py-2 bg-blue-50 rounded-xl text-xs font-semibold text-blue-700 border border-blue-100 shadow-sm">{t}</span>
             ))}
           </div>
         </div>
 
         {/* Bio */}
-        <div className="bg-white rounded-2xl p-4 shadow-sm mb-4 border border-gray-100">
-          <h3 className="font-bold text-slate-900 mb-2">À propos de moi</h3>
+        <div className="bg-white rounded-2xl p-5 shadow-md border border-gray-100/80">
+          <h3 className="font-bold text-slate-900 mb-3 text-base flex items-center gap-2">
+            <span className="w-1 h-5 bg-emerald-500 rounded-full inline-block" />
+            À propos de moi
+          </h3>
           <p className="text-sm text-slate-600 leading-relaxed">{a.bio}</p>
         </div>
 
         {/* Description */}
-        <div className="bg-white rounded-2xl p-4 shadow-sm mb-4 border border-gray-100">
-          <h3 className="font-bold text-slate-900 mb-2">Détail de la recherche</h3>
+        <div className="bg-white rounded-2xl p-5 shadow-md border border-gray-100/80">
+          <h3 className="font-bold text-slate-900 mb-3 text-base flex items-center gap-2">
+            <span className="w-1 h-5 bg-amber-500 rounded-full inline-block" />
+            Détail de la recherche
+          </h3>
           <p className="text-sm text-slate-600 leading-relaxed">{a.description}</p>
         </div>
       </div>
 
-      {/* Bottom action */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-6 py-4 flex space-x-3 z-20 max-w-md mx-auto">
-        <a href={`tel:${a.authorPhone}`} className="w-14 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+      {/* Bottom action bar */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-gray-200/80 px-6 py-4 flex space-x-3 z-20 max-w-md mx-auto shadow-[0_-4px_20px_rgba(0,0,0,0.06)]">
+        <a href={`tel:${a.authorPhone}`} className="w-14 h-12 bg-green-50 border border-green-200 rounded-xl flex items-center justify-center hover:bg-green-100 transition-colors">
           <Phone size={20} className="text-green-600" />
         </a>
-        <a href={`https://wa.me/212${a.authorPhone.slice(1)}`} target="_blank" className="w-14 h-12 bg-emerald-100 rounded-xl flex items-center justify-center">
+        <a href={`https://wa.me/212${a.authorPhone.slice(1)}`} target="_blank" className="w-14 h-12 bg-emerald-50 border border-emerald-200 rounded-xl flex items-center justify-center hover:bg-emerald-100 transition-colors">
           <MessageCircle size={20} className="text-emerald-600" />
         </a>
         <button
           onClick={() => navigate(`/app/chat/${a.id}`)}
-          className="flex-1 bg-blue-600 text-white py-3 rounded-xl font-bold text-sm hover:bg-blue-700 transition-colors"
+          className="flex-1 bg-blue-600 text-white py-3 rounded-xl font-bold text-sm hover:bg-blue-700 transition-colors shadow-md shadow-blue-200"
         >
           Contacter
         </button>

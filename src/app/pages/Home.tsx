@@ -37,7 +37,7 @@ function StudentHome() {
   return (
     <div className="min-h-screen bg-gray-50 pb-24">
       {/* Hero Header */}
-      <div className="bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 p-6 pb-10 rounded-b-3xl shadow-lg">
+      <div className="bg-blue-600 p-6 pb-10 rounded-b-3xl shadow-lg">
         <div className="flex justify-between items-center mb-5">
           <img src="/logo_TalabaTech.png" alt="TalabaTech" className="h-10 w-auto brightness-0 invert" />
           <div className="flex items-center space-x-3">
@@ -58,15 +58,6 @@ function StudentHome() {
           <h1 className="text-2xl font-bold text-white">Salut, {userName}! 👋</h1>
           <p className="text-blue-200 text-sm mt-1">Trouve ta colocation idéale</p>
         </div>
-
-        <div className="relative">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-300" size={20} />
-          <input
-            type="text"
-            placeholder="Rechercher un logement, colocataire..."
-            className="w-full bg-white/15 backdrop-blur-sm text-white placeholder-blue-200 pl-12 pr-4 py-3.5 rounded-2xl border border-white/20 focus:ring-2 focus:ring-white/30 outline-none"
-          />
-        </div>
       </div>
 
       <div className="px-6 -mt-5">
@@ -77,7 +68,7 @@ function StudentHome() {
               <BedDouble size={22} className="text-emerald-600" />
             </div>
             <div className="text-left">
-              <p className="text-sm font-bold text-slate-900">J'offre une coloc</p>
+              <p className="text-sm font-bold text-slate-900">J'offre une colocataire</p>
               <p className="text-[10px] text-slate-400">Partager mon logement</p>
             </div>
           </button>
@@ -86,8 +77,8 @@ function StudentHome() {
               <UserPlus size={22} className="text-blue-600" />
             </div>
             <div className="text-left">
-              <p className="text-sm font-bold text-slate-900">Je cherche coloc</p>
-              <p className="text-[10px] text-slate-400">Trouver un logement</p>
+              <p className="text-sm font-bold text-slate-900">Je cherche colocataire</p>
+              <p className="text-[10px] text-slate-400">Trouver un colocataire</p>
             </div>
           </button>
         </div>
@@ -211,7 +202,7 @@ function StudentHome() {
         </div>
 
         {/* CTA */}
-        <div onClick={() => navigate("/app/add?type=search-coloc")} className="bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl p-5 mb-6 cursor-pointer hover:from-blue-600 hover:to-indigo-700 transition-all shadow-lg">
+        <div onClick={() => navigate("/app/add?type=search-coloc")} className="bg-blue-600 rounded-2xl p-5 mb-6 cursor-pointer hover:bg-blue-700 transition-colors shadow-lg">
           <div className="flex items-center space-x-4">
             <div className="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center flex-shrink-0">
               <UserPlus size={28} className="text-white" />
@@ -254,7 +245,7 @@ function ProviderHome() {
   return (
     <div className="min-h-screen bg-gray-50 pb-24">
       {/* Provider Header */}
-      <div className="bg-gradient-to-br from-indigo-700 via-purple-700 to-purple-800 p-6 pb-8 rounded-b-3xl shadow-lg">
+      <div className="bg-indigo-700 p-6 pb-8 rounded-b-3xl shadow-lg">
         <div className="flex justify-between items-center mb-4">
           <img src="/logo_TalabaTech.png" alt="TalabaTech" className="h-10 w-auto brightness-0 invert" />
           <div className="flex items-center space-x-3">
