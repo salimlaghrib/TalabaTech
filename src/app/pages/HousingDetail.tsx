@@ -1,5 +1,12 @@
 import { useNavigate, useParams } from "react-router";
-import { ArrowLeft, MapPin, Star, Phone, MessageCircle, Heart, Share2, Wifi, Coffee, Car, Wind, Home, Users, Calendar } from "lucide-react";
+import { ArrowLeft, MapPin, Star, Phone, MessageCircle, Heart, Share2, Wifi, Coffee, Car, Wind, Home, Users, Calendar, BedDouble, Bath, Ruler, CheckCircle } from "lucide-react";
+
+interface Roommate {
+  name: string;
+  age: number;
+  faculty: string;
+  image: string;
+}
 
 interface Listing {
   id: string | undefined;
@@ -10,102 +17,149 @@ interface Listing {
   rating: number;
   reviews: number;
   description: string;
-  announcement: "offer" | "demand";
+  announcement: "offer" | "demand" | "colocation";
   amenities: { name: string; icon: React.ComponentType<{ size: number; className?: string }> }[];
   author: {
     name: string;
     image: string;
     joined: string;
     role: string;
+    phone?: string;
+    whatsapp?: string;
   };
   images: string[];
   // demand-specific fields
   preferences?: string[];
   moveInDate?: string;
   currentOccupants?: number;
+  // colocation-specific fields
+  rooms?: number;
+  bedrooms?: number;
+  bathrooms?: number;
+  surface?: number;
+  furnished?: boolean;
+  availablePlaces?: number;
+  totalPlaces?: number;
+  roommates?: Roommate[];
 }
 
 const listingsData: Record<string, Listing> = {
   "1": {
     id: "1",
-    title: "Modern Apartment City Center",
-    price: "2000 MAD",
-    period: "/month",
-    location: "Errachidia Center, Rue 5",
+    title: "Chambre en coloc - Apt meublé",
+    price: "750 MAD",
+    period: "/mois",
+    location: "Near FST, Errachidia",
     rating: 4.8,
-    reviews: 24,
-    announcement: "offer",
-    description: "A beautiful, fully furnished apartment located in the heart of Errachidia. Perfect for students looking for a quiet and comfortable place to study. Includes high-speed internet and utilities.",
+    reviews: 12,
+    announcement: "colocation",
+    description: "Appartement spacieux et entièrement meublé, idéal pour les étudiants. Chambre privée avec lit, bureau et armoire. Espaces communs partagés : salon, cuisine équipée et salle de bain. Ambiance calme et studieuse, proche de la FST.",
     amenities: [
       { name: "WiFi", icon: Wifi },
-      { name: "Kitchen", icon: Coffee },
+      { name: "Cuisine", icon: Coffee },
       { name: "Parking", icon: Car },
       { name: "AC", icon: Wind },
     ],
     author: {
       name: "Ahmed K.",
       image: "photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&q=80",
-      joined: "2 years ago",
-      role: "Landlord",
+      joined: "2 ans",
+      role: "Propriétaire",
+      phone: "0661-234567",
+      whatsapp: "0661-234567",
     },
     images: [
       "photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80",
       "photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80",
       "photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=800&q=80",
     ],
+    rooms: 4,
+    bedrooms: 3,
+    bathrooms: 1,
+    surface: 85,
+    furnished: true,
+    availablePlaces: 1,
+    totalPlaces: 3,
+    roommates: [
+      { name: "Youssef B.", age: 21, faculty: "FST - Informatique", image: "photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=100&q=80" },
+      { name: "Karim T.", age: 22, faculty: "FST - Maths", image: "photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&q=80" },
+    ],
   },
   "2": {
     id: "2",
-    title: "Looking for a Roommate near FST",
-    price: "800 MAD",
-    period: "/month (per person)",
-    location: "Near FST, Errachidia",
-    rating: 0,
-    reviews: 0,
-    announcement: "demand",
-    description: "Salut! Je suis étudiant en 2ème année informatique à la FST. Je cherche un(e) colocataire sérieux(se) pour partager un appartement 2 chambres près de la fac. L'appartement est déjà meublé avec internet. Ambiance calme pour étudier, mais aussi conviviale!",
+    title: "Studio partagé pour étudiants",
+    price: "600 MAD",
+    period: "/mois",
+    location: "Hay Mohammadi, Errachidia",
+    rating: 4.5,
+    reviews: 8,
+    announcement: "colocation",
+    description: "Studio partagé entre 2 étudiants, situé dans un quartier calme à Hay Mohammadi. Chaque colocataire a son espace privé. L'appartement est proche du campus et des commerces. Ambiance studieuse garantie.",
     amenities: [
       { name: "WiFi", icon: Wifi },
-      { name: "Kitchen", icon: Coffee },
+      { name: "Cuisine", icon: Coffee },
     ],
     author: {
       name: "Youssef B.",
       image: "photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=100&q=80",
-      joined: "6 months ago",
-      role: "Student",
+      joined: "6 mois",
+      role: "Étudiant",
+      phone: "0677-345678",
+      whatsapp: "0677-345678",
     },
     images: [
-      "photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=800&q=80",
       "photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80",
+      "photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=800&q=80",
     ],
-    preferences: ["Non-smoker", "Student preferred", "Quiet after 22h", "Share cleaning"],
-    moveInDate: "Nov 1, 2024",
-    currentOccupants: 1,
+    rooms: 3,
+    bedrooms: 2,
+    bathrooms: 1,
+    surface: 55,
+    furnished: false,
+    availablePlaces: 1,
+    totalPlaces: 2,
+    roommates: [
+      { name: "Youssef B.", age: 21, faculty: "FST - Informatique", image: "photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=100&q=80" },
+    ],
   },
   "3": {
     id: "3",
-    title: "Studio for Student",
-    price: "1200 MAD",
-    period: "/month",
-    location: "Boutalamine, Errachidia",
-    rating: 4.2,
-    reviews: 8,
-    announcement: "offer",
-    description: "Cozy studio apartment ideal for a single student. Located in a quiet neighborhood with easy access to public transport. The studio is fully equipped with a small kitchen and private bathroom.",
+    title: "Coloc moderne centre-ville",
+    price: "900 MAD",
+    period: "/mois",
+    location: "Centre Errachidia",
+    rating: 4.9,
+    reviews: 18,
+    announcement: "colocation",
+    description: "Grand appartement moderne au centre-ville, parfait pour les étudiants. 4 chambres spacieuses, salon lumineux, cuisine entièrement équipée. Proche de tous les commerces et transports. 2 places disponibles immédiatement.",
     amenities: [
       { name: "WiFi", icon: Wifi },
-      { name: "Kitchen", icon: Coffee },
+      { name: "Cuisine", icon: Coffee },
       { name: "AC", icon: Wind },
+      { name: "Parking", icon: Car },
     ],
     author: {
       name: "Sara M.",
       image: "photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=100&q=80",
-      joined: "1 year ago",
-      role: "Landlord",
+      joined: "1 an",
+      role: "Propriétaire",
+      phone: "0655-789012",
+      whatsapp: "0655-789012",
     },
     images: [
-      "photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80",
       "photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=800&q=80",
+      "photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80",
+    ],
+    rooms: 6,
+    bedrooms: 4,
+    bathrooms: 2,
+    surface: 120,
+    furnished: true,
+    availablePlaces: 2,
+    totalPlaces: 4,
+    roommates: [
+      { name: "Amina L.", age: 22, faculty: "FST - Physique", image: "photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&q=80" },
+      { name: "Fatima Z.", age: 20, faculty: "FLSH - Anglais", image: "photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=100&q=80" },
     ],
   },
   "4": {
@@ -230,12 +284,19 @@ export default function HousingDetail() {
         <div className={`absolute bottom-6 left-6 px-4 py-2 rounded-xl text-sm font-bold flex items-center space-x-2 shadow-md backdrop-blur-sm ${
           listing.announcement === "offer"
             ? "bg-emerald-500/90 text-white"
+            : listing.announcement === "colocation"
+            ? "bg-blue-500/90 text-white"
             : "bg-orange-500/90 text-white"
         }`}>
           {listing.announcement === "offer" ? (
             <>
               <Home size={16} />
               <span>Housing Offer</span>
+            </>
+          ) : listing.announcement === "colocation" ? (
+            <>
+              <Users size={16} />
+              <span>Colocation</span>
             </>
           ) : (
             <>
@@ -276,6 +337,82 @@ export default function HousingDetail() {
               <div className="text-xs text-slate-400 ml-2">Reviews</div>
             </div>
           </div>
+        )}
+
+        {/* ─── Colocation: Room Details ─── */}
+        {listing.announcement === "colocation" && (
+          <>
+            {/* Room Info Grid */}
+            <div className="grid grid-cols-2 gap-3 mb-6">
+              {listing.bedrooms !== undefined && (
+                <div className="bg-blue-50 border border-blue-100 rounded-2xl p-4 flex items-center space-x-3">
+                  <BedDouble size={22} className="text-blue-500" />
+                  <div>
+                    <div className="text-xs text-slate-400">Chambres</div>
+                    <div className="font-bold text-slate-900 text-sm">{listing.bedrooms}</div>
+                  </div>
+                </div>
+              )}
+              {listing.bathrooms !== undefined && (
+                <div className="bg-purple-50 border border-purple-100 rounded-2xl p-4 flex items-center space-x-3">
+                  <Bath size={22} className="text-purple-500" />
+                  <div>
+                    <div className="text-xs text-slate-400">Salles de bain</div>
+                    <div className="font-bold text-slate-900 text-sm">{listing.bathrooms}</div>
+                  </div>
+                </div>
+              )}
+              {listing.surface !== undefined && (
+                <div className="bg-green-50 border border-green-100 rounded-2xl p-4 flex items-center space-x-3">
+                  <Ruler size={22} className="text-green-500" />
+                  <div>
+                    <div className="text-xs text-slate-400">Surface</div>
+                    <div className="font-bold text-slate-900 text-sm">{listing.surface} m²</div>
+                  </div>
+                </div>
+              )}
+              {listing.availablePlaces !== undefined && (
+                <div className="bg-orange-50 border border-orange-100 rounded-2xl p-4 flex items-center space-x-3">
+                  <Users size={22} className="text-orange-500" />
+                  <div>
+                    <div className="text-xs text-slate-400">Places dispo</div>
+                    <div className="font-bold text-slate-900 text-sm">{listing.availablePlaces} / {listing.totalPlaces}</div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Furnished badge */}
+            <div className={`flex items-center space-x-3 p-4 rounded-2xl mb-6 ${listing.furnished ? "bg-emerald-50 border border-emerald-100" : "bg-gray-50 border border-gray-200"}`}>
+              <CheckCircle size={22} className={listing.furnished ? "text-emerald-500" : "text-gray-400"} />
+              <div>
+                <div className="font-bold text-slate-900 text-sm">{listing.furnished ? "Meublé" : "Non meublé"}</div>
+                <div className="text-xs text-slate-400">{listing.furnished ? "Lit, bureau, armoire inclus" : "Vous devez apporter vos meubles"}</div>
+              </div>
+            </div>
+
+            {/* Current Roommates */}
+            {listing.roommates && listing.roommates.length > 0 && (
+              <div className="mb-6">
+                <h2 className="text-lg font-bold text-slate-900 mb-3">Colocataires actuels</h2>
+                <div className="space-y-3">
+                  {listing.roommates.map((rm, idx) => (
+                    <div key={idx} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-xl border border-gray-100">
+                      <img
+                        src={`https://images.unsplash.com/${rm.image}`}
+                        alt={rm.name}
+                        className="w-12 h-12 rounded-full object-cover border-2 border-blue-200"
+                      />
+                      <div className="flex-1">
+                        <div className="font-bold text-slate-900 text-sm">{rm.name}</div>
+                        <div className="text-xs text-slate-500">{rm.age} ans · {rm.faculty}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </>
         )}
 
         {/* Demand-specific: Move-in date & current occupants */}
@@ -338,28 +475,55 @@ export default function HousingDetail() {
 
         <div className="mb-8">
           <h2 className="text-lg font-bold text-slate-900 mb-4">
-            {listing.announcement === "offer" ? "Landlord" : "Posted by"}
+            {listing.announcement === "offer" ? "Landlord" : listing.announcement === "colocation" ? "Contact" : "Posted by"}
           </h2>
-          <div className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl border border-gray-100">
-            <div className="flex items-center">
-              <img 
-                src={`https://images.unsplash.com/${listing.author.image}`} 
-                alt={listing.author.name} 
-                className="w-12 h-12 rounded-full object-cover mr-3"
-              />
-              <div>
-                <div className="font-bold text-slate-900">{listing.author.name}</div>
-                <div className="text-xs text-slate-400">
-                  {listing.author.role} · Joined {listing.author.joined}
+          <div className="bg-gray-50 rounded-2xl border border-gray-100 overflow-hidden">
+            <div className="flex items-center justify-between p-4">
+              <div className="flex items-center">
+                <img 
+                  src={`https://images.unsplash.com/${listing.author.image}`} 
+                  alt={listing.author.name} 
+                  className="w-12 h-12 rounded-full object-cover mr-3"
+                />
+                <div>
+                  <div className="font-bold text-slate-900">{listing.author.name}</div>
+                  <div className="text-xs text-slate-400">
+                    {listing.author.role} · {listing.author.joined}
+                  </div>
                 </div>
               </div>
+              <button 
+                onClick={() => navigate(`/app/chatroom/${id}?type=housing`)}
+                className="p-2 bg-white rounded-full shadow-sm border border-gray-200 hover:bg-blue-50 transition-colors"
+              >
+                <MessageCircle size={20} className="text-blue-600" />
+              </button>
             </div>
-            <button 
-              onClick={() => navigate(`/app/chatroom/${id}?type=housing`)}
-              className="p-2 bg-white rounded-full shadow-sm border border-gray-200 hover:bg-blue-50 transition-colors"
-            >
-              <MessageCircle size={20} className="text-blue-600" />
-            </button>
+            {/* Phone / WhatsApp for colocation */}
+            {listing.announcement === "colocation" && listing.author.phone && (
+              <div className="border-t border-gray-100 p-4 space-y-3">
+                <a href={`tel:${listing.author.phone}`} className="flex items-center space-x-3 text-sm">
+                  <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
+                    <Phone size={18} className="text-green-600" />
+                  </div>
+                  <div>
+                    <div className="font-semibold text-slate-900">T\u00e9l\u00e9phone</div>
+                    <div className="text-slate-500 text-xs">{listing.author.phone}</div>
+                  </div>
+                </a>
+                {listing.author.whatsapp && (
+                  <a href={`https://wa.me/${listing.author.whatsapp.replace(/[^0-9]/g, '')}`} className="flex items-center space-x-3 text-sm">
+                    <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center">
+                      <MessageCircle size={18} className="text-emerald-600" />
+                    </div>
+                    <div>
+                      <div className="font-semibold text-slate-900">WhatsApp</div>
+                      <div className="text-slate-500 text-xs">{listing.author.whatsapp}</div>
+                    </div>
+                  </a>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -373,7 +537,12 @@ export default function HousingDetail() {
           <MessageCircle size={18} />
           <span>Message</span>
         </button>
-        {listing.announcement === "offer" ? (
+        {listing.announcement === "colocation" ? (
+          <a href={`tel:${listing.author.phone || ''}`} className="flex-1 bg-blue-600 text-white py-3.5 rounded-xl font-bold text-sm shadow-lg flex items-center justify-center space-x-2 hover:bg-blue-700 transition-colors">
+            <Phone size={18} />
+            <span>Appeler</span>
+          </a>
+        ) : listing.announcement === "offer" ? (
           <button className="flex-1 bg-slate-900 text-white py-3.5 rounded-xl font-bold text-sm shadow-lg flex items-center justify-center space-x-2">
             <Phone size={18} />
             <span>Call Now</span>

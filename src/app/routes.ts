@@ -1,46 +1,62 @@
 import { createBrowserRouter } from "react-router";
-import Splash from "./pages/Splash";
-import Onboarding from "./pages/Onboarding";
-import Auth from "./pages/Auth";
+import { createElement } from "react";
 import Layout from "./layout";
+import Splash from "./pages/Splash";
+import Auth from "./pages/Auth";
 import Home from "./pages/Home";
-import Housing from "./pages/Housing";
-import HousingDetail from "./pages/HousingDetail";
-import Chat from "./pages/Chat";
+import Announcements from "./pages/Announcements";
+import AnnouncementDetail from "./pages/AnnouncementDetail";
+import AddAnnouncement from "./pages/AddAnnouncement";
 import Profile from "./pages/Profile";
+import Chat from "./pages/Chat";
 import ChatRoom from "./pages/ChatRoom";
 import Chatbot from "./pages/Chatbot";
-import AddHousing from "./pages/AddHousing";
-import AddHousingRequest from "./pages/AddHousingRequest";
-import AddRoommateRequest from "./pages/AddRoommateRequest";
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    Component: Splash,
-  },
-  {
-    path: "/onboarding",
-    Component: Onboarding,
+    element: createElement(Splash),
   },
   {
     path: "/auth",
-    Component: Auth,
+    element: createElement(Auth),
   },
   {
     path: "/app",
-    Component: Layout,
+    element: createElement(Layout),
     children: [
-      { index: true, Component: Home },
-      { path: "housing", Component: Housing },
-      { path: "housing/add", Component: AddHousing },
-      { path: "housing/request", Component: AddHousingRequest },
-      { path: "housing/roommate", Component: AddRoommateRequest },
-      { path: "housing/:id", Component: HousingDetail },
-      { path: "chat", Component: Chat },
-      { path: "profile", Component: Profile },
-      { path: "chatroom/:id", Component: ChatRoom },
-      { path: "chatbot", Component: Chatbot },
+      {
+        index: true,
+        element: createElement(Home),
+      },
+      {
+        path: "announcements",
+        element: createElement(Announcements),
+      },
+      {
+        path: "announcements/:id",
+        element: createElement(AnnouncementDetail),
+      },
+      {
+        path: "add",
+        element: createElement(AddAnnouncement),
+      },
+      {
+        path: "chatbot",
+        element: createElement(Chatbot),
+      },
+      {
+        path: "chat",
+        element: createElement(Chat),
+      },
+      {
+        path: "chat/:id",
+        element: createElement(ChatRoom),
+      },
+      {
+        path: "profile",
+        element: createElement(Profile),
+      },
     ],
   },
 ]);

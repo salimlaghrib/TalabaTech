@@ -1,261 +1,193 @@
-import { User, Settings, Bell, HelpCircle, LogOut, ChevronRight, Edit2, Home, Briefcase, GraduationCap, Clock, CheckCircle, XCircle, Building, Eye, MessageCircle, Plus } from "lucide-react";
 import { useNavigate } from "react-router";
 import { useUser } from "../context/UserContext";
+import { Settings, ChevronRight, LogOut, Bell, Shield, HelpCircle, Star, BedDouble, MapPin, Edit3, Eye, Trash2, Plus, Building2 } from "lucide-react";
 
-/* ════════════════════════════════════════════════════
-   PROVIDER PROFILE
-   ════════════════════════════════════════════════════ */
-function ProviderProfile() {
+interface MyAnnouncement {
+  id: number;
+  title: string;
+  city: string;
+  price: string;
+  views: number;
+  status: "active" | "paused";
+  type: string;
+  image: string;
+}
+
+const myStudentAnnouncements: MyAnnouncement[] = [
+  { id: 1, title: "Chambre meublée près FST", city: "Errachidia", price: "750 MAD/mois", views: 45, status: "active", type: "Offre logement", image: "photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=200&q=80" },
+  { id: 10, title: "Cherche colocation près FST", city: "Errachidia", price: "800 MAD/mois", views: 23, status: "active", type: "Cherche coloc", image: "photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80" },
+];
+
+const myProviderAnnouncements: MyAnnouncement[] = [
+  { id: 20, title: "Appartement F3 meublé centre", city: "Errachidia", price: "2000 MAD/mois", views: 120, status: "active", type: "Logement", image: "photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=200&q=80" },
+  { id: 21, title: "Chambre privée avec balcon", city: "Errachidia", price: "1500 MAD/mois", views: 67, status: "paused", type: "Logement", image: "photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=200&q=80" },
+];
+
+export default function Profile() {
   const navigate = useNavigate();
-  const { userName, approvalStatus, logout } = useUser();
+  const { role, userName, setRole, setUserName } = useUser();
+
+  const isStudent = role === "student";
+  const announcements = isStudent ? myStudentAnnouncements : myProviderAnnouncements;
+
+  const handleLogout = () => {
+    setRole("student");
+    setUserName("");
+    navigate("/auth");
+  };
+
+  const menuItems = [
+    { icon: Bell, label: "Notifications", count: 3 },
+    { icon: Shield, label: "Confidentialité" },
+    { icon: Star, label: "Évaluer l'application" },
+    { icon: HelpCircle, label: "Aide & Support" },
+  ];
 
   return (
-    <div className="bg-gray-50 min-h-screen pb-24">
-      {/* Header */}
-      <div className="bg-gradient-to-br from-blue-600 to-indigo-700 p-6 pb-8 rounded-b-3xl shadow-lg">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold text-white">My Profile</h1>
-          <button className="p-2 bg-white/20 rounded-full hover:bg-white/30 transition-colors">
-            <Edit2 size={18} className="text-white" />
-          </button>
-        </div>
-
-        <div className="flex flex-col items-center">
-          <div className="w-24 h-24 rounded-full p-1 bg-gradient-to-tr from-green-400 to-blue-400 mb-4">
-            <div className="w-full h-full rounded-full border-4 border-white overflow-hidden bg-white">
-              <img
-                src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80"
-                alt="Profile"
-                className="w-full h-full object-cover"
-              />
-            </div>
+    <div className="min-h-screen bg-gray-50 pb-24">
+      {/* Profile header */}
+      <div className="bg-gradient-to-br from-blue-600 to-indigo-700 px-6 pt-8 pb-10 relative">
+        <button className="absolute top-4 right-4 w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
+          <Settings size={20} className="text-white" />
+        </button>
+        <div className="flex items-center space-x-4">
+          <div className="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center text-white text-2xl font-bold border-3 border-white/40">
+            {(userName || "U").charAt(0).toUpperCase()}
           </div>
-          <h2 className="text-xl font-bold text-white">{userName}</h2>
-          <div className="flex items-center space-x-2 mt-2">
-            <span className="inline-flex items-center space-x-1 px-3 py-1 rounded-full text-xs font-bold bg-white/20 text-white backdrop-blur-sm">
-              <Home size={12} />
-              <span>Housing Provider</span>
-            </span>
-            <span className={`inline-flex items-center space-x-1 px-3 py-1 rounded-full text-xs font-bold ${
-              approvalStatus === "approved" ? "bg-green-400/30 text-green-100"
-              : approvalStatus === "pending" ? "bg-yellow-400/30 text-yellow-100"
-              : "bg-red-400/30 text-red-100"
+          <div>
+            <h1 className="text-xl font-bold text-white">{userName || "Utilisateur"}</h1>
+            <span className={`inline-block mt-1 px-3 py-1 rounded-full text-xs font-bold ${
+              isStudent ? "bg-yellow-400 text-yellow-900" : "bg-emerald-400 text-emerald-900"
             }`}>
-              {approvalStatus === "approved" && <CheckCircle size={12} />}
-              {approvalStatus === "pending" && <Clock size={12} />}
-              {approvalStatus === "rejected" && <XCircle size={12} />}
-              <span>{approvalStatus === "approved" ? "Approved" : approvalStatus === "pending" ? "Pending" : "Rejected"}</span>
+              {isStudent ? "Étudiant" : "Prestataire"}
             </span>
-          </div>
-        </div>
-
-        {/* Stats */}
-        <div className="flex space-x-4 w-full justify-center mt-6">
-          <div className="text-center bg-white/15 backdrop-blur-sm rounded-xl px-6 py-3">
-            <div className="text-xl font-bold text-white">3</div>
-            <div className="text-xs text-blue-200 font-medium">Listings</div>
-          </div>
-          <div className="text-center bg-white/15 backdrop-blur-sm rounded-xl px-6 py-3">
-            <div className="text-xl font-bold text-white">285</div>
-            <div className="text-xs text-blue-200 font-medium">Views</div>
-          </div>
-          <div className="text-center bg-white/15 backdrop-blur-sm rounded-xl px-6 py-3">
-            <div className="text-xl font-bold text-white">12</div>
-            <div className="text-xs text-blue-200 font-medium">Inquiries</div>
           </div>
         </div>
       </div>
 
       <div className="px-6 -mt-4">
-        {/* Pending / Rejected Banner */}
-        {approvalStatus === "pending" && (
-          <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-4">
-            <p className="text-xs text-yellow-700 text-center font-medium">
-              ⏳ Your account is under review. You'll be able to add listings once approved.
-            </p>
+        {/* Stats */}
+        <div className="bg-white rounded-2xl p-4 shadow-md mb-5 grid grid-cols-3 gap-4 text-center">
+          <div>
+            <p className="text-lg font-bold text-blue-600">{announcements.length}</p>
+            <p className="text-[10px] text-slate-400 font-semibold">Annonces</p>
           </div>
-        )}
-        {approvalStatus === "rejected" && (
-          <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-4">
-            <p className="text-xs text-red-700 text-center font-medium">
-              ❌ Your provider request was rejected. Contact support for more info.
-            </p>
+          <div>
+            <p className="text-lg font-bold text-blue-600">{announcements.reduce((sum, a) => sum + a.views, 0)}</p>
+            <p className="text-[10px] text-slate-400 font-semibold">Vues totales</p>
           </div>
-        )}
-
-        {/* Quick Actions for approved */}
-        {approvalStatus === "approved" && (
-          <div className="mb-6">
-            <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider ml-2 mb-4">Quick Actions</h3>
-            <div className="grid grid-cols-2 gap-3">
-              <button
-                onClick={() => navigate("/app/housing/add")}
-                className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm flex flex-col items-center space-y-2 hover:border-blue-200 hover:bg-blue-50 transition-colors"
-              >
-                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                  <Plus size={22} className="text-blue-600" />
-                </div>
-                <span className="text-xs font-semibold text-slate-700">Add Listing</span>
-              </button>
-              <button
-                onClick={() => navigate("/app/housing")}
-                className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm flex flex-col items-center space-y-2 hover:border-green-200 hover:bg-green-50 transition-colors"
-              >
-                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-                  <Building size={22} className="text-green-600" />
-                </div>
-                <span className="text-xs font-semibold text-slate-700">My Listings</span>
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Menu */}
-        <div className="space-y-4">
-          <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider ml-2">Account</h3>
-          <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
-            {[
-              { icon: User, label: "Personal Information", value: "Complete" },
-              { icon: Bell, label: "Notifications", value: "On" },
-              { icon: Settings, label: "App Settings", value: "" },
-              { icon: HelpCircle, label: "Help & Support", value: "" },
-            ].map((item, index) => (
-              <div
-                key={item.label}
-                className={`flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 transition-colors ${index !== 3 ? "border-b border-gray-50" : ""}`}
-              >
-                <div className="flex items-center space-x-3">
-                  <div className="p-2 bg-gray-50 rounded-lg text-slate-600"><item.icon size={20} /></div>
-                  <span className="font-medium text-slate-700">{item.label}</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  {item.value && <span className="text-xs font-medium text-slate-400">{item.value}</span>}
-                  <ChevronRight size={18} className="text-slate-300" />
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <button
-            onClick={() => { logout(); navigate("/auth"); }}
-            className="w-full bg-white text-red-500 font-bold p-4 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-center space-x-2 mt-6 hover:bg-red-50 transition-colors"
-          >
-            <LogOut size={20} />
-            <span>Log Out</span>
-          </button>
-          <div className="text-center mt-6 mb-8">
-            <p className="text-xs text-slate-300">TalabaTech v1.0.0</p>
+          <div>
+            <p className="text-lg font-bold text-blue-600">5</p>
+            <p className="text-[10px] text-slate-400 font-semibold">Messages</p>
           </div>
         </div>
-      </div>
-    </div>
-  );
-}
 
-/* ════════════════════════════════════════════════════
-   STUDENT PROFILE
-   ════════════════════════════════════════════════════ */
-function StudentProfile() {
-  const navigate = useNavigate();
-  const { userName, logout } = useUser();
-
-  return (
-    <div className="bg-gray-50 min-h-screen pb-24">
-      {/* Header */}
-      <div className="bg-white p-6 pb-8 rounded-b-3xl shadow-sm border-b border-gray-100 mb-6">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold text-slate-900">My Profile</h1>
-          <button className="p-2 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors">
-            <Edit2 size={18} className="text-slate-600" />
-          </button>
-        </div>
-
-        <div className="flex flex-col items-center">
-          <div className="w-24 h-24 rounded-full p-1 bg-gradient-to-tr from-blue-500 to-green-400 mb-4">
-            <div className="w-full h-full rounded-full border-4 border-white overflow-hidden bg-white">
-              <img
-                src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80"
-                alt="Profile"
-                className="w-full h-full object-cover"
-              />
-            </div>
-          </div>
-          <h2 className="text-xl font-bold text-slate-900">{userName}</h2>
-          <div className="flex items-center space-x-2 mb-2">
-            <span className="inline-flex items-center space-x-1 px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-700">
-              <GraduationCap size={12} />
-              <span>Student</span>
-            </span>
-            <span className="text-slate-400 text-sm">Computer Science • Year 2</span>
-          </div>
-
-          <div className="flex space-x-8 w-full justify-center border-t border-gray-100 pt-6 mt-2">
-            <div className="text-center">
-              <div className="text-xl font-bold text-slate-900">4.8</div>
-              <div className="text-xs text-slate-400 font-medium">Rating</div>
-            </div>
-            <div className="text-center">
-              <div className="text-xl font-bold text-slate-900">12</div>
-              <div className="text-xs text-slate-400 font-medium">Reviews</div>
-            </div>
-            <div className="text-center">
-              <div className="text-xl font-bold text-slate-900">3</div>
-              <div className="text-xs text-slate-400 font-medium">Saved</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Menu */}
-      <div className="px-6 space-y-4">
-        <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider ml-2">Account</h3>
-        <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
-          {[
-            { icon: User, label: "Personal Information", value: "Complete" },
-            { icon: Bell, label: "Notifications", value: "On" },
-            { icon: Settings, label: "App Settings", value: "" },
-            { icon: HelpCircle, label: "Help & Support", value: "" },
-          ].map((item, index) => (
-            <div
-              key={item.label}
-              className={`flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 transition-colors ${index !== 3 ? "border-b border-gray-50" : ""}`}
+        {/* My announcements */}
+        <div className="mb-5">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="font-bold text-slate-900">Mes annonces</h2>
+            <button
+              onClick={() => navigate("/app/add")}
+              className="flex items-center space-x-1 text-blue-600 text-xs font-semibold"
             >
-              <div className="flex items-center space-x-3">
-                <div className="p-2 bg-gray-50 rounded-lg text-slate-600"><item.icon size={20} /></div>
-                <span className="font-medium text-slate-700">{item.label}</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                {item.value && <span className="text-xs font-medium text-slate-400">{item.value}</span>}
-                <ChevronRight size={18} className="text-slate-300" />
-              </div>
+              <Plus size={14} />
+              <span>Nouvelle</span>
+            </button>
+          </div>
+
+          {announcements.length === 0 ? (
+            <div className="bg-white rounded-2xl p-8 text-center border border-gray-100">
+              <BedDouble size={40} className="mx-auto text-gray-300 mb-3" />
+              <p className="text-slate-500 text-sm font-medium">Aucune annonce</p>
+              <button
+                onClick={() => navigate("/app/add")}
+                className="mt-3 text-blue-600 text-sm font-semibold"
+              >
+                Publier ma première annonce
+              </button>
             </div>
+          ) : (
+            <div className="space-y-3">
+              {announcements.map((a) => (
+                <div key={a.id} className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
+                  <div className="flex">
+                    <img
+                      src={`https://images.unsplash.com/${a.image}`}
+                      alt={a.title}
+                      className="w-24 h-24 object-cover"
+                    />
+                    <div className="flex-1 p-3">
+                      <div className="flex items-start justify-between mb-1">
+                        <div>
+                          <p className="text-sm font-bold text-slate-900 line-clamp-1">{a.title}</p>
+                          <div className="flex items-center text-xs text-slate-400 mt-0.5">
+                            <MapPin size={10} className="mr-0.5" />{a.city}
+                          </div>
+                        </div>
+                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                          a.status === "active" ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"
+                        }`}>
+                          {a.status === "active" ? "Active" : "Pausée"}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between mt-2">
+                        <p className="text-xs font-bold text-green-600">{a.price}</p>
+                        <div className="flex items-center space-x-1 text-xs text-slate-400">
+                          <Eye size={12} /><span>{a.views}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex border-t border-gray-100">
+                    <button
+                      onClick={() => navigate(`/app/announcements/${a.id}`)}
+                      className="flex-1 py-2.5 text-xs font-semibold text-blue-600 flex items-center justify-center space-x-1 hover:bg-blue-50 transition-colors"
+                    >
+                      <Eye size={12} /><span>Voir</span>
+                    </button>
+                    <button className="flex-1 py-2.5 text-xs font-semibold text-slate-600 flex items-center justify-center space-x-1 hover:bg-gray-50 transition-colors border-l border-gray-100">
+                      <Edit3 size={12} /><span>Modifier</span>
+                    </button>
+                    <button className="flex-1 py-2.5 text-xs font-semibold text-red-500 flex items-center justify-center space-x-1 hover:bg-red-50 transition-colors border-l border-gray-100">
+                      <Trash2 size={12} /><span>Supprimer</span>
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Menu items */}
+        <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 mb-5">
+          {menuItems.map((item, i) => (
+            <button
+              key={item.label}
+              className={`w-full flex items-center px-4 py-3.5 hover:bg-gray-50 transition-colors ${
+                i > 0 ? "border-t border-gray-100" : ""
+              }`}
+            >
+              <div className="w-9 h-9 bg-blue-50 rounded-full flex items-center justify-center mr-3">
+                <item.icon size={18} className="text-blue-600" />
+              </div>
+              <span className="text-sm font-medium text-slate-900 flex-1 text-left">{item.label}</span>
+              {item.count && (
+                <span className="w-5 h-5 bg-red-500 text-white rounded-full text-[10px] font-bold flex items-center justify-center mr-2">{item.count}</span>
+              )}
+              <ChevronRight size={16} className="text-slate-300" />
+            </button>
           ))}
         </div>
 
+        {/* Logout */}
         <button
-          onClick={() => { logout(); navigate("/auth"); }}
-          className="w-full bg-white text-red-500 font-bold p-4 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-center space-x-2 mt-6 hover:bg-red-50 transition-colors"
+          onClick={handleLogout}
+          className="w-full flex items-center justify-center space-x-2 bg-red-50 text-red-600 py-3.5 rounded-2xl font-bold text-sm hover:bg-red-100 transition-colors"
         >
-          <LogOut size={20} />
-          <span>Log Out</span>
+          <LogOut size={18} />
+          <span>Se déconnecter</span>
         </button>
-        <div className="text-center mt-6 mb-8">
-          <p className="text-xs text-slate-300">TalabaTech v1.0.0</p>
-        </div>
       </div>
     </div>
   );
-}
-
-/* ════════════════════════════════════════════════════
-   MAIN EXPORT
-   ════════════════════════════════════════════════════ */
-export default function Profile() {
-  const { role } = useUser();
-
-  if (role === "provider") {
-    return <ProviderProfile />;
-  }
-
-  return <StudentProfile />;
 }
