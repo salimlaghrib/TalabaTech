@@ -129,7 +129,7 @@ export default function Profile() {
                 <div key={a.id} className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
                   <div className="flex">
                     <img
-                      src={`https://images.unsplash.com/${a.image}`}
+                      src={a.image.startsWith('/') ? a.image : `https://images.unsplash.com/${a.image}`}
                       alt={a.title}
                       className="w-24 h-24 object-cover"
                     />
