@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router";
 import { Search, MessageCircle } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface Conversation {
   id: number;
@@ -12,7 +12,9 @@ interface Conversation {
   online: boolean;
 }
 
-const conversations: Conversation[] = [
+const CONVS_KEY = "talab_conversations";
+
+const staticConversations: Conversation[] = [
   { id: 1, name: "Youssef B.", avatar: "photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=100&q=80", lastMessage: "Oui la chambre est toujours disponible !", time: "14:30", unread: 2, online: true },
   { id: 2, name: "Fatima Z.", avatar: "photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=100&q=80", lastMessage: "D'accord, on peut visiter demain ?", time: "12:15", unread: 0, online: true },
   { id: 3, name: "Agence ImmoPlus", avatar: "photo-1560179707-f14e90ef3623?auto=format&fit=crop&w=100&q=80", lastMessage: "L'appartement est disponible à partir de mars.", time: "Hier", unread: 1, online: false },
@@ -20,9 +22,25 @@ const conversations: Conversation[] = [
   { id: 5, name: "Amina L.", avatar: "photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&q=80", lastMessage: "Merci pour les infos !", time: "Lun", unread: 0, online: false },
 ];
 
+function getConversations(): Conversation[] {
+  try {
+    const stored = localStorage.getItem(CONVS_KEY);
+    if (stored) return JSON.parse(stored);
+  } catch {}
+  // First run: seed localStorage with static conversations
+  localStorage.setItem(CONVS_KEY, JSON.stringify(staticConversations));
+  return staticConversations;
+}
+
 export default function Chat() {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
+  const [conversations, setConversations] = useState<Conversation[]>(getConversations);
+
+  // Refresh list when navigating back to this page
+  useEffect(() => {
+    setConversations(getConversations());
+  }, []);
 
   const filtered = conversations.filter(c =>
     c.name.toLowerCase().includes(searchQuery.toLowerCase()) ||

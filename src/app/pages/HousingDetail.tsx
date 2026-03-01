@@ -69,9 +69,9 @@ const listingsData: Record<string, Listing> = {
       whatsapp: "0661-234567",
     },
     images: [
-      "photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80",
-      "photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80",
-      "photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=800&q=80",
     ],
     rooms: 4,
     bedrooms: 3,
@@ -108,8 +108,8 @@ const listingsData: Record<string, Listing> = {
       whatsapp: "0677-345678",
     },
     images: [
-      "photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80",
-      "photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=800&q=80",
     ],
     rooms: 3,
     bedrooms: 2,
@@ -147,8 +147,8 @@ const listingsData: Record<string, Listing> = {
       whatsapp: "0655-789012",
     },
     images: [
-      "photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=800&q=80",
-      "photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80",
     ],
     rooms: 6,
     bedrooms: 4,
@@ -184,8 +184,8 @@ const listingsData: Record<string, Listing> = {
       role: "Student",
     },
     images: [
-      "photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=800&q=80",
-      "photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80",
     ],
     preferences: ["Girls only", "Student preferred", "Clean & tidy", "Respect privacy"],
     moveInDate: "Oct 15, 2024",
@@ -214,8 +214,8 @@ const listingsData: Record<string, Listing> = {
       role: "Landlord",
     },
     images: [
-      "photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=800&q=80",
-      "photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80",
     ],
   },
   "6": {
@@ -239,8 +239,8 @@ const listingsData: Record<string, Listing> = {
       role: "Student",
     },
     images: [
-      "photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80",
-      "photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=800&q=80",
     ],
     preferences: ["Non-smoker", "Respectful", "Share expenses equally"],
     moveInDate: "ASAP",
@@ -259,7 +259,7 @@ export default function HousingDetail() {
       {/* Header Image Area */}
       <div className="relative h-72">
         <img
-          src={`https://images.unsplash.com/${listing.images[0]}`}
+          src={listing.images[0]}
           alt={listing.title}
           className="w-full h-full object-cover"
         />

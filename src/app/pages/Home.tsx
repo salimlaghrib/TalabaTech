@@ -14,17 +14,17 @@ function StudentHome() {
 
   /* Colocations disponibles (offres de partage par des étudiants) */
   const availableColocations = [
-    { id: 1, title: "Chambre meublée près FST", price: "750 MAD/mois", location: "Près FST, Errachidia", rooms: "3 colocataires", available: "1 place", image: "photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80", features: ["Wi-Fi", "Meublé", "Cuisine"] },
-    { id: 2, title: "Studio partagé étudiants", price: "600 MAD/mois", location: "Hay Mohammadi", rooms: "2 colocataires", available: "1 place", image: "photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80", features: ["Calme", "Proche campus"] },
-    { id: 3, title: "Coloc moderne centre-ville", price: "900 MAD/mois", location: "Centre Errachidia", rooms: "4 colocataires", available: "2 places", image: "photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=800&q=80", features: ["AC", "Wi-Fi", "Parking"] },
-    { id: 4, title: "Maison partagée calme", price: "850 MAD/mois", location: "Hay Salam", rooms: "3 colocataires", available: "1 place", image: "photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80", features: ["Jardin", "Cuisine", "Non-fumeur"] },
+    { id: 1, title: "Chambre meublée près FST", price: "750 MAD/mois", location: "Près FST, Errachidia", rooms: "3 colocataires", available: "1 place", image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80", features: ["Wi-Fi", "Meublé", "Cuisine"] },
+    { id: 2, title: "Studio partagé étudiants", price: "600 MAD/mois", location: "Hay Mohammadi", rooms: "2 colocataires", available: "1 place", image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80", features: ["Calme", "Proche campus"] },
+    { id: 3, title: "Coloc moderne centre-ville", price: "900 MAD/mois", location: "Centre Errachidia", rooms: "4 colocataires", available: "2 places", image: "https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=800&q=80", features: ["AC", "Wi-Fi", "Parking"] },
+    { id: 4, title: "Maison partagée calme", price: "850 MAD/mois", location: "Hay Salam", rooms: "3 colocataires", available: "1 place", image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80", features: ["Jardin", "Cuisine", "Non-fumeur"] },
   ];
 
   /* Logements disponibles (offres de prestataires immobiliers) */
   const availableHousings = [
-    { id: 20, title: "Appartement F3 meublé centre", price: "2000 MAD/mois", location: "Centre Errachidia", type: "Appartement", surface: "80m²", image: "photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80", features: ["Meublé", "Parking", "AC"] },
-    { id: 21, title: "Chambre privée avec balcon", price: "1500 MAD/mois", location: "Hay El Massira", type: "Chambre", surface: "25m²", image: "photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=800&q=80", features: ["Sécurisé", "Balcon"] },
-    { id: 22, title: "Studio neuf près campus", price: "1800 MAD/mois", location: "Près FST", type: "Studio", surface: "35m²", image: "photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80", features: ["Meublé", "Wi-Fi", "Cuisine"] },
+    { id: 20, title: "Appartement F3 meublé centre", price: "2000 MAD/mois", location: "Centre Errachidia", type: "Appartement", surface: "80m²", image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80", features: ["Meublé", "Parking", "AC"] },
+    { id: 21, title: "Chambre privée avec balcon", price: "1500 MAD/mois", location: "Hay El Massira", type: "Chambre", surface: "25m²", image: "https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=800&q=80", features: ["Sécurisé", "Balcon"] },
+    { id: 22, title: "Studio neuf près campus", price: "1800 MAD/mois", location: "Près FST", type: "Studio", surface: "35m²", image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80", features: ["Meublé", "Wi-Fi", "Cuisine"] },
   ];
 
   /* Étudiants qui cherchent coloc */
@@ -101,7 +101,7 @@ function StudentHome() {
             {availableColocations.map((item) => (
               <div key={item.id} onClick={() => navigate(`/app/announcements/${item.id}`)} className="min-w-[260px] bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100 cursor-pointer hover:shadow-md transition-shadow">
                 <div className="h-36 bg-gray-200 relative">
-                  <img src={`https://images.unsplash.com/${item.image}`} alt={item.title} className="w-full h-full object-cover" />
+                  <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
                   <div className="absolute top-2 left-2 bg-blue-600 text-white px-2.5 py-1 rounded-lg text-[11px] font-bold flex items-center space-x-1">
                     <Users size={12} />
                     <span>{item.available}</span>
@@ -139,7 +139,7 @@ function StudentHome() {
             {availableHousings.map((item) => (
               <div key={item.id} onClick={() => navigate(`/app/announcements/${item.id}`)} className="min-w-[240px] bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100 cursor-pointer hover:shadow-md transition-shadow">
                 <div className="h-32 bg-gray-200 relative">
-                  <img src={`https://images.unsplash.com/${item.image}`} alt={item.title} className="w-full h-full object-cover" />
+                  <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
                   <div className="absolute top-2 right-2 px-2 py-0.5 rounded-lg text-[10px] font-bold bg-purple-100 text-purple-700">Prestataire</div>
                   <div className="absolute bottom-2 right-2 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-lg text-xs font-bold text-slate-900">{item.price}</div>
                 </div>
@@ -227,19 +227,42 @@ function StudentHome() {
    ════════════════════════════════════════════════════ */
 function ProviderHome() {
   const navigate = useNavigate();
-  const { userName } = useUser();
+  const { userName, providerAnnouncements, studentAnnouncements } = useUser();
 
+  /* Static fallback listings (deduped against context) */
+  const CONVS_KEY = "talab_conversations";
+  function saveContact(id: number, name: string, avatar: string, label: string) {
+    try {
+      const stored = JSON.parse(localStorage.getItem(CONVS_KEY) || "[]") as { id: number; name: string; avatar: string; online: boolean; lastMessage: string; time: string; unread: number }[];
+      if (!stored.some((c) => c.id === id)) {
+        stored.unshift({ id, name, avatar, online: false, lastMessage: `À propos : ${label}`, time: "maintenant", unread: 0 });
+        localStorage.setItem(CONVS_KEY, JSON.stringify(stored));
+      }
+    } catch {}
+  }
+
+  const staticListings = [
+    { id: 20, title: "Appartement meublé centre", price: "2000 MAD/mois", location: "Errachidia Centre", views: 142, inquiries: 8, image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80", status: "Disponible" },
+    { id: 21, title: "Chambre privée avec balcon", price: "1500 MAD/mois", location: "Hay El Massira", views: 89, inquiries: 3, image: "https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=800&q=80", status: "Disponible" },
+    { id: 22, title: "Maison 5 chambres", price: "4000 MAD/mois", location: "Route Tinghir", views: 56, inquiries: 2, image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80", status: "Occupé" },
+  ];
+  const ctxListingIds = new Set(providerAnnouncements.map(a => a.id));
   const myListings = [
-    { id: 20, title: "Appartement meublé centre", price: "2000 MAD/mois", location: "Errachidia Centre", views: 142, inquiries: 8, image: "photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80", status: "Actif" },
-    { id: 21, title: "Chambre privée avec balcon", price: "1500 MAD/mois", location: "Hay El Massira", views: 89, inquiries: 3, image: "photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=800&q=80", status: "Actif" },
-    { id: 22, title: "Maison 5 chambres", price: "4000 MAD/mois", location: "Route Tinghir", views: 56, inquiries: 2, image: "photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80", status: "Pausé" },
+    ...providerAnnouncements.map(a => ({ id: a.id, title: a.title, price: a.price, location: a.city, views: a.views, inquiries: 0, image: a.image, status: a.status === "active" ? "Disponible" : "Occupé" })),
+    ...staticListings.filter(l => !ctxListingIds.has(l.id)),
   ];
 
-  const studentRequests = [
+  /* Static fallback student requests (deduped against context) */
+  const staticStudentRequests = [
     { id: 10, name: "Youssef B.", age: 21, faculty: "FST - Informatique", budget: "800 MAD/mois", location: "Près FST", features: ["Wi-Fi", "Meublé", "Non-fumeur"], image: "photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=100&q=80", time: "2h", phone: "0600123456" },
     { id: 11, name: "Fatima Z.", age: 20, faculty: "FLSH - Lettres", budget: "600 MAD/mois", location: "Hay Mohammadi", features: ["Meublé", "Study Room"], image: "photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=100&q=80", time: "5h", phone: "0600234567" },
     { id: 12, name: "Amina L.", age: 22, faculty: "FST - Physique", budget: "700 MAD/mois", location: "Près Campus", features: ["Wi-Fi", "Cuisine"], image: "photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&q=80", time: "1j", phone: "0600345678" },
     { id: 13, name: "Omar K.", age: 23, faculty: "EST - Gestion", budget: "900 MAD/mois", location: "Centre-ville", features: ["Parking", "AC", "Wi-Fi"], image: "photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&q=80", time: "2j", phone: "0600456789" },
+  ];
+  const ctxStudentIds = new Set(studentAnnouncements.map(a => a.id));
+  const studentRequests = [
+    ...studentAnnouncements.map(a => ({ id: a.id, name: a.authorName, age: 20, faculty: [a.university, a.studyField].filter(Boolean).join(" - ") || "Étudiant", budget: a.price, location: a.city, features: a.tags, image: a.authorImage, time: a.posted, phone: a.phone ?? "" })),
+    ...staticStudentRequests.filter(r => !ctxStudentIds.has(r.id)),
   ];
 
   return (
@@ -266,14 +289,10 @@ function ProviderHome() {
           <p className="text-purple-200 text-sm mt-1">Gérez vos logements et trouvez des locataires</p>
         </div>
 
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-2 gap-3">
           <div className="bg-white/15 backdrop-blur-sm rounded-xl p-3 text-center">
-            <p className="text-2xl font-bold text-white">{myListings.length}</p>
+            <p className="text-2xl font-bold text-white">{providerAnnouncements.length}</p>
             <p className="text-purple-200 text-xs mt-0.5">Mes annonces</p>
-          </div>
-          <div className="bg-white/15 backdrop-blur-sm rounded-xl p-3 text-center">
-            <p className="text-2xl font-bold text-white">{myListings.reduce((s, l) => s + l.views, 0)}</p>
-            <p className="text-purple-200 text-xs mt-0.5">Vues totales</p>
           </div>
           <div className="bg-white/15 backdrop-blur-sm rounded-xl p-3 text-center">
             <p className="text-2xl font-bold text-white">{myListings.reduce((s, l) => s + l.inquiries, 0)}</p>
@@ -302,12 +321,12 @@ function ProviderHome() {
               <div key={listing.id} onClick={() => navigate(`/app/announcements/${listing.id}`)} className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 cursor-pointer hover:shadow-md transition-shadow">
                 <div className="flex">
                   <div className="w-24 h-24 flex-shrink-0">
-                    <img src={`https://images.unsplash.com/${listing.image}`} alt={listing.title} className="w-full h-full object-cover" />
+                    <img src={listing.image} alt={listing.title} className="w-full h-full object-cover" />
                   </div>
                   <div className="flex-1 p-3">
                     <div className="flex items-start justify-between">
                       <h3 className="text-sm font-bold text-slate-900 leading-tight flex-1 pr-2">{listing.title}</h3>
-                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${listing.status === "Actif" ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"}`}>{listing.status}</span>
+                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${listing.status === "Disponible" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-600"}`}>{listing.status}</span>
                     </div>
                     <p className="text-sm font-bold text-indigo-600 mt-1">{listing.price}</p>
                     <div className="flex items-center space-x-3 text-[11px] text-slate-400 mt-1.5">
@@ -326,7 +345,7 @@ function ProviderHome() {
           <div className="flex justify-between items-center mb-4">
             <div className="flex items-center space-x-2">
               <Users size={20} className="text-orange-500" />
-              <h2 className="text-lg font-bold text-slate-800">Étudiants cherchent logement</h2>
+              <h2 className="text-lg font-bold text-slate-800">Cherchent un logement</h2>
             </div>
             <button onClick={() => navigate("/app/announcements")} className="text-indigo-600 text-sm font-semibold">Voir tout</button>
           </div>
@@ -343,24 +362,29 @@ function ProviderHome() {
                       <span className="text-[10px] text-slate-400">{req.time}</span>
                     </div>
                     <p className="text-xs text-slate-500 mb-1.5">{req.faculty}</p>
-                    <div className="flex items-center space-x-3 text-xs text-slate-500 mb-2">
+                    <div className="flex items-center space-x-3 text-xs text-slate-500 mb-1.5">
                       <span className="flex items-center"><MapPin size={11} className="mr-1" />{req.location}</span>
                       <span className="font-bold text-green-600">{req.budget}</span>
                     </div>
-                    <div className="flex items-center justify-between">
-                      <div className="flex flex-wrap gap-1">
-                        {req.features.map(f => (
-                          <span key={f} className="px-2 py-0.5 bg-orange-50 rounded-full text-[10px] text-orange-600 font-medium">{f}</span>
-                        ))}
-                      </div>
+                    <div className="flex items-center space-x-1 text-xs text-slate-500 mb-2">
+                      <Phone size={11} className="text-slate-400" />
+                      <span className="font-medium text-slate-700">{req.phone}</span>
+                    </div>
+                    <div className="flex flex-wrap gap-1">
+                      {req.features.map(f => (
+                        <span key={f} className="px-2 py-0.5 bg-orange-50 rounded-full text-[10px] text-orange-600 font-medium">{f}</span>
+                      ))}
                     </div>
                   </div>
                 </div>
                 <div className="flex space-x-2 mt-3 pt-3 border-t border-gray-100">
-                  <button onClick={() => navigate(`/app/announcements/${req.id}`)} className="flex-1 bg-indigo-50 text-indigo-600 py-2 rounded-xl text-xs font-bold hover:bg-indigo-100 transition-colors">Voir profil</button>
-                  <button onClick={() => navigate(`/app/chat/${req.id}`)} className="flex-1 bg-indigo-600 text-white py-2 rounded-xl text-xs font-bold hover:bg-indigo-700 transition-colors flex items-center justify-center space-x-1">
-                    <MessageCircle size={12} />
-                    <span>Contacter</span>
+                  <a href={`tel:${req.phone}`} className="flex-1 bg-green-50 border border-green-200 text-green-700 py-2.5 rounded-xl text-xs font-bold hover:bg-green-100 transition-colors flex items-center justify-center space-x-1">
+                    <Phone size={13} />
+                    <span>Appeler</span>
+                  </a>
+                  <button onClick={() => { saveContact(req.id, req.name, req.image, req.faculty); navigate(`/app/chat/${req.id}`); }} className="flex-1 bg-indigo-600 text-white py-2.5 rounded-xl text-xs font-bold hover:bg-indigo-700 transition-colors flex items-center justify-center space-x-1">
+                    <MessageCircle size={13} />
+                    <span>Message</span>
                   </button>
                 </div>
               </div>

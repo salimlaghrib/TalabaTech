@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router";
 import { ArrowLeft, Phone, MoreVertical, Send, Paperclip, Smile } from "lucide-react";
 
@@ -9,12 +9,51 @@ interface Message {
   isMine: boolean;
 }
 
-const chatData: Record<number, { name: string; avatar: string; online: boolean; messages: Message[] }> = {
+interface ConvMeta {
+  id: number;
+  name: string;
+  avatar: string;
+  online: boolean;
+  lastMessage: string;
+  time: string;
+  unread: number;
+}
+
+const MSGS_KEY = (id: number) => `talab_messages_${id}`;
+const CONVS_KEY = "talab_conversations";
+
+function loadMessages(id: number, seed: Message[]): Message[] {
+  try {
+    const stored = localStorage.getItem(MSGS_KEY(id));
+    if (stored) return JSON.parse(stored);
+  } catch {}
+  if (seed.length > 0) localStorage.setItem(MSGS_KEY(id), JSON.stringify(seed));
+  return seed;
+}
+
+function saveMessages(id: number, messages: Message[]) {
+  localStorage.setItem(MSGS_KEY(id), JSON.stringify(messages));
+}
+
+function updateConvLastMessage(id: number, text: string, time: string) {
+  try {
+    const stored = JSON.parse(localStorage.getItem(CONVS_KEY) || "[]") as ConvMeta[];
+    const idx = stored.findIndex((c) => c.id === id);
+    if (idx >= 0) {
+      stored[idx].lastMessage = text;
+      stored[idx].time = time;
+      stored[idx].unread = 0;
+      localStorage.setItem(CONVS_KEY, JSON.stringify(stored));
+    }
+  } catch {}
+}
+
+const staticChatData: Record<number, { name: string; avatar: string; online: boolean; seedMessages: Message[] }> = {
   1: {
     name: "Youssef B.",
     avatar: "photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=100&q=80",
     online: true,
-    messages: [
+    seedMessages: [
       { id: 1, text: "Salam ! J'ai vu votre annonce pour la chambre près de la FST.", time: "14:20", isMine: true },
       { id: 2, text: "Salam ! Oui elle est toujours disponible.", time: "14:22", isMine: false },
       { id: 3, text: "C'est meublé ?", time: "14:25", isMine: true },
@@ -27,7 +66,7 @@ const chatData: Record<number, { name: string; avatar: string; online: boolean; 
     name: "Fatima Z.",
     avatar: "photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=100&q=80",
     online: true,
-    messages: [
+    seedMessages: [
       { id: 1, text: "Bonjour ! Votre studio est encore disponible ?", time: "11:40", isMine: true },
       { id: 2, text: "Bonjour ! Oui, disponible à partir du 1er mars.", time: "11:55", isMine: false },
       { id: 3, text: "D'accord, on peut visiter demain ?", time: "12:15", isMine: false },
@@ -37,7 +76,7 @@ const chatData: Record<number, { name: string; avatar: string; online: boolean; 
     name: "Agence ImmoPlus",
     avatar: "photo-1560179707-f14e90ef3623?auto=format&fit=crop&w=100&q=80",
     online: false,
-    messages: [
+    seedMessages: [
       { id: 1, text: "Bonjour, je suis intéressé par l'appartement F3.", time: "10:00", isMine: true },
       { id: 2, text: "Bonjour ! Bien sûr, c'est un bel appartement au centre.", time: "10:30", isMine: false },
       { id: 3, text: "L'appartement est disponible à partir de mars.", time: "10:31", isMine: false },
@@ -47,7 +86,7 @@ const chatData: Record<number, { name: string; avatar: string; online: boolean; 
     name: "Karim T.",
     avatar: "photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&q=80",
     online: false,
-    messages: [
+    seedMessages: [
       { id: 1, text: "Salut ! Tu as encore de la place dans ta coloc ?", time: "09:00", isMine: true },
       { id: 2, text: "Salut ! Oui il reste une place.", time: "09:15", isMine: false },
       { id: 3, text: "Parfait, envoie-moi ton numéro.", time: "09:20", isMine: false },
@@ -57,7 +96,7 @@ const chatData: Record<number, { name: string; avatar: string; online: boolean; 
     name: "Amina L.",
     avatar: "photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&q=80",
     online: false,
-    messages: [
+    seedMessages: [
       { id: 1, text: "Bonjour ! J'ai une chambre disponible si tu cherches.", time: "Lun 14:00", isMine: true },
       { id: 2, text: "Merci pour les infos !", time: "Lun 15:00", isMine: false },
     ],
@@ -67,12 +106,40 @@ const chatData: Record<number, { name: string; avatar: string; online: boolean; 
 export default function ChatRoom() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [message, setMessage] = useState("");
-  const [messages, setMessages] = useState<Message[]>([]);
+  const numId = Number(id);
+  const staticChat = staticChatData[numId];
+  const bottomRef = useRef<HTMLDivElement>(null);
 
-  const chat = chatData[Number(id)];
+  const [convMeta, setConvMeta] = useState<{ name: string; avatar: string; online: boolean } | null>(() => {
+    if (staticChat) return { name: staticChat.name, avatar: staticChat.avatar, online: staticChat.online };
+    try {
+      const convs = JSON.parse(localStorage.getItem(CONVS_KEY) || "[]") as ConvMeta[];
+      const found = convs.find((c) => c.id === numId);
+      if (found) return { name: found.name, avatar: found.avatar, online: found.online };
+    } catch {}
+    return null;
+  });
 
-  if (!chat) {
+  const [messages, setMessages] = useState<Message[]>(() =>
+    loadMessages(numId, staticChat?.seedMessages ?? [])
+  );
+  const [input, setInput] = useState("");
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  useEffect(() => {
+    if (!convMeta) {
+      try {
+        const convs = JSON.parse(localStorage.getItem(CONVS_KEY) || "[]") as ConvMeta[];
+        const found = convs.find((c) => c.id === numId);
+        if (found) setConvMeta({ name: found.name, avatar: found.avatar, online: found.online });
+      } catch {}
+    }
+  }, [numId, convMeta]);
+
+  if (!convMeta) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
@@ -83,17 +150,15 @@ export default function ChatRoom() {
     );
   }
 
-  const allMessages = [...chat.messages, ...messages];
-
   const handleSend = () => {
-    if (!message.trim()) return;
-    setMessages(prev => [...prev, {
-      id: Date.now(),
-      text: message,
-      time: new Date().toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }),
-      isMine: true,
-    }]);
-    setMessage("");
+    if (!input.trim()) return;
+    const time = new Date().toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
+    const newMsg: Message = { id: Date.now(), text: input.trim(), time, isMine: true };
+    const updated = [...messages, newMsg];
+    setMessages(updated);
+    saveMessages(numId, updated);
+    updateConvLastMessage(numId, input.trim(), time);
+    setInput("");
   };
 
   return (
@@ -104,14 +169,14 @@ export default function ChatRoom() {
           <ArrowLeft size={18} className="text-slate-700" />
         </button>
         <img
-          src={`https://images.unsplash.com/${chat.avatar}`}
-          alt={chat.name}
+          src={`https://images.unsplash.com/${convMeta.avatar}`}
+          alt={convMeta.name}
           className="w-10 h-10 rounded-full object-cover"
         />
         <div className="flex-1">
-          <p className="text-sm font-bold text-slate-900">{chat.name}</p>
-          <p className={`text-[11px] ${chat.online ? "text-green-500" : "text-slate-400"}`}>
-            {chat.online ? "En ligne" : "Hors ligne"}
+          <p className="text-sm font-bold text-slate-900">{convMeta.name}</p>
+          <p className={`text-[11px] ${convMeta.online ? "text-green-500" : "text-slate-400"}`}>
+            {convMeta.online ? "En ligne" : "Hors ligne"}
           </p>
         </div>
         <button className="w-9 h-9 bg-gray-100 rounded-full flex items-center justify-center">
@@ -124,7 +189,12 @@ export default function ChatRoom() {
 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
-        {allMessages.map((msg) => (
+        {messages.length === 0 && (
+          <div className="text-center py-12">
+            <p className="text-slate-400 text-sm">Commencez la conversation !</p>
+          </div>
+        )}
+        {messages.map((msg) => (
           <div
             key={msg.id}
             className={`flex ${msg.isMine ? "justify-end" : "justify-start"}`}
@@ -143,6 +213,7 @@ export default function ChatRoom() {
             </div>
           </div>
         ))}
+        <div ref={bottomRef} />
       </div>
 
       {/* Input */}
@@ -154,8 +225,8 @@ export default function ChatRoom() {
           <div className="flex-1 relative">
             <input
               type="text"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSend()}
               placeholder="Écrire un message..."
               className="w-full bg-gray-50 px-4 py-2.5 pr-10 rounded-full border border-gray-200 text-sm outline-none focus:border-blue-400"

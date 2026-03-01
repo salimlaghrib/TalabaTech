@@ -31,7 +31,9 @@ export default function Auth() {
       {/* Header */}
       <div className="bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 px-6 pt-14 pb-10 rounded-b-3xl">
         <div className="flex justify-center mb-4">
-          <img src="/logo_TalabaTech.png" alt="TalabaTech" className="h-14 w-auto brightness-0 invert" />
+          <div className="bg-white rounded-2xl px-5 py-3 shadow-lg">
+            <img src="/logo_TalabaTech.png" alt="TalabaTech" className="h-12 w-auto" />
+          </div>
         </div>
         <h1 className="text-white text-2xl font-bold text-center">
           {mode === "login" ? "Bon retour !" : "Créer un compte"}

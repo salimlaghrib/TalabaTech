@@ -1,34 +1,17 @@
 import { useNavigate } from "react-router";
 import { useUser } from "../context/UserContext";
-import { Settings, ChevronRight, LogOut, Bell, Shield, HelpCircle, Star, BedDouble, MapPin, Edit3, Eye, Trash2, Plus, Building2 } from "lucide-react";
-
-interface MyAnnouncement {
-  id: number;
-  title: string;
-  city: string;
-  price: string;
-  views: number;
-  status: "active" | "paused";
-  type: string;
-  image: string;
-}
-
-const myStudentAnnouncements: MyAnnouncement[] = [
-  { id: 1, title: "Chambre meublée près FST", city: "Errachidia", price: "750 MAD/mois", views: 45, status: "active", type: "Offre logement", image: "photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=200&q=80" },
-  { id: 10, title: "Cherche colocation près FST", city: "Errachidia", price: "800 MAD/mois", views: 23, status: "active", type: "Cherche coloc", image: "photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80" },
-];
-
-const myProviderAnnouncements: MyAnnouncement[] = [
-  { id: 20, title: "Appartement F3 meublé centre", city: "Errachidia", price: "2000 MAD/mois", views: 120, status: "active", type: "Logement", image: "photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=200&q=80" },
-  { id: 21, title: "Chambre privée avec balcon", city: "Errachidia", price: "1500 MAD/mois", views: 67, status: "paused", type: "Logement", image: "photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=200&q=80" },
-];
+import { Settings, ChevronRight, LogOut, Bell, Shield, HelpCircle, Star, BedDouble, MapPin, Edit3, Eye, Trash2, Plus, Building2, PauseCircle, PlayCircle, GraduationCap, BookOpen, Users } from "lucide-react";
 
 export default function Profile() {
   const navigate = useNavigate();
-  const { role, userName, setRole, setUserName } = useUser();
+  const { role, userName, setRole, setUserName, studentAnnouncements, providerAnnouncements, deleteAnnouncement, toggleAnnouncementStatus } = useUser();
 
   const isStudent = role === "student";
-  const announcements = isStudent ? myStudentAnnouncements : myProviderAnnouncements;
+
+  // Students only see their coloc-search requests; providers see all their listings
+  const announcements = isStudent
+    ? studentAnnouncements.filter(a => a.type === "search-coloc")
+    : providerAnnouncements;
 
   const handleLogout = () => {
     setRole("student");
@@ -80,10 +63,46 @@ export default function Profile() {
           </div>
         </div>
 
+        {/* Student info card */}
+        {isStudent && (
+          <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 mb-5">
+            <h2 className="font-bold text-slate-900 mb-3 text-sm">Mes informations</h2>
+            <div className="space-y-2.5">
+              <div className="flex items-center space-x-3 text-sm">
+                <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0">
+                  <GraduationCap size={16} className="text-blue-500" />
+                </div>
+                <div>
+                  <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-wide">Université</p>
+                  <p className="text-sm font-semibold text-slate-800">FST Errachidia</p>
+                </div>
+              </div>
+              <div className="flex items-center space-x-3 text-sm">
+                <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center flex-shrink-0">
+                  <BookOpen size={16} className="text-indigo-500" />
+                </div>
+                <div>
+                  <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-wide">Filière</p>
+                  <p className="text-sm font-semibold text-slate-800">Informatique</p>
+                </div>
+              </div>
+              <div className="flex items-center space-x-3 text-sm">
+                <div className="w-8 h-8 rounded-lg bg-purple-50 flex items-center justify-center flex-shrink-0">
+                  <Users size={16} className="text-purple-500" />
+                </div>
+                <div>
+                  <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-wide">Préférence coloc</p>
+                  <p className="text-sm font-semibold text-slate-800">Homme</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* My announcements */}
         <div className="mb-5">
           <div className="flex items-center justify-between mb-3">
-            <h2 className="font-bold text-slate-900">Mes annonces</h2>
+            <h2 className="font-bold text-slate-900">{isStudent ? "Mes demandes coloc" : "Mes annonces"}</h2>
             <button
               onClick={() => navigate("/app/add")}
               className="flex items-center space-x-1 text-blue-600 text-xs font-semibold"
@@ -96,12 +115,12 @@ export default function Profile() {
           {announcements.length === 0 ? (
             <div className="bg-white rounded-2xl p-8 text-center border border-gray-100">
               <BedDouble size={40} className="mx-auto text-gray-300 mb-3" />
-              <p className="text-slate-500 text-sm font-medium">Aucune annonce</p>
+              <p className="text-slate-500 text-sm font-medium">{isStudent ? "Aucune demande de coloc" : "Aucune annonce"}</p>
               <button
-                onClick={() => navigate("/app/add")}
+                onClick={() => navigate(isStudent ? "/app/add?type=search-coloc" : "/app/add")}
                 className="mt-3 text-blue-600 text-sm font-semibold"
               >
-                Publier ma première annonce
+                {isStudent ? "Publier ma recherche" : "Publier ma première annonce"}
               </button>
             </div>
           ) : (
@@ -123,9 +142,9 @@ export default function Profile() {
                           </div>
                         </div>
                         <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                          a.status === "active" ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"
+                          a.status === "active" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-600"
                         }`}>
-                          {a.status === "active" ? "Active" : "Pausée"}
+                          {a.status === "active" ? "Disponible" : "Occupé"}
                         </span>
                       </div>
                       <div className="flex items-center justify-between mt-2">
@@ -143,10 +162,28 @@ export default function Profile() {
                     >
                       <Eye size={12} /><span>Voir</span>
                     </button>
-                    <button className="flex-1 py-2.5 text-xs font-semibold text-slate-600 flex items-center justify-center space-x-1 hover:bg-gray-50 transition-colors border-l border-gray-100">
+                    <button
+                      onClick={() => navigate(`/app/add?edit=${a.id}`)}
+                      className="flex-1 py-2.5 text-xs font-semibold text-slate-600 flex items-center justify-center space-x-1 hover:bg-gray-50 transition-colors border-l border-gray-100">
                       <Edit3 size={12} /><span>Modifier</span>
                     </button>
-                    <button className="flex-1 py-2.5 text-xs font-semibold text-red-500 flex items-center justify-center space-x-1 hover:bg-red-50 transition-colors border-l border-gray-100">
+                    {!isStudent && (
+                      <button
+                        onClick={() => toggleAnnouncementStatus(a.id)}
+                        className={`flex-1 py-2.5 text-xs font-semibold flex items-center justify-center space-x-1 border-l border-gray-100 transition-colors ${
+                          a.status === "active"
+                            ? "text-orange-500 hover:bg-orange-50"
+                            : "text-green-600 hover:bg-green-50"
+                        }`}
+                      >
+                        {a.status === "active"
+                          ? <><PauseCircle size={12} /><span>Occupé</span></>
+                          : <><PlayCircle size={12} /><span>Disponible</span></>}
+                      </button>
+                    )}
+                    <button
+                      onClick={() => deleteAnnouncement(a.id)}
+                      className="flex-1 py-2.5 text-xs font-semibold text-red-500 flex items-center justify-center space-x-1 hover:bg-red-50 transition-colors border-l border-gray-100">
                       <Trash2 size={12} /><span>Supprimer</span>
                     </button>
                   </div>

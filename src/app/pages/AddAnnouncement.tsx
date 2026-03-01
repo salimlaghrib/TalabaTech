@@ -8,54 +8,95 @@ type FormType = "offer-room" | "search-coloc" | "provider-listing";
 export default function AddAnnouncement() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { role } = useUser();
+  const { role, userName, addAnnouncement, updateAnnouncement, studentAnnouncements, providerAnnouncements } = useUser();
   const typeParam = searchParams.get("type") as FormType | null;
+  const editId = searchParams.get("edit") ? Number(searchParams.get("edit")) : null;
 
-  const [formType, setFormType] = useState<FormType>(typeParam || (role === "provider" ? "provider-listing" : "offer-room"));
+  const allAnnouncements = [...studentAnnouncements, ...providerAnnouncements];
+  const editTarget = editId ? allAnnouncements.find(a => a.id === editId) : null;
+
+  const [formType, setFormType] = useState<FormType>(
+    editTarget?.type ?? typeParam ?? (role === "provider" ? "provider-listing" : "offer-room")
+  );
   const [submitted, setSubmitted] = useState(false);
 
   // Common fields
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [city, setCity] = useState("");
-  const [price, setPrice] = useState("");
+  const [title, setTitle] = useState(editTarget?.title ?? "");
+  const [description, setDescription] = useState(editTarget?.description ?? "");
+  const [city, setCity] = useState(editTarget?.city ?? "");
+  const [price, setPrice] = useState(editTarget ? editTarget.price.replace(/[^0-9]/g, "") : "");
 
   // Housing fields (offer-room & provider-listing)
-  const [housingType, setHousingType] = useState("");
-  const [bedrooms, setBedrooms] = useState("");
-  const [bathrooms, setBathrooms] = useState("");
-  const [surface, setSurface] = useState("");
-  const [address, setAddress] = useState("");
-  const [furnished, setFurnished] = useState(false);
-  const [genderPref, setGenderPref] = useState("Mixte");
+  const [housingType, setHousingType] = useState(editTarget?.housingType ?? "");
+  const [bedrooms, setBedrooms] = useState(editTarget?.bedrooms?.toString() ?? "");
+  const [bathrooms, setBathrooms] = useState(editTarget?.bathrooms?.toString() ?? "");
+  const [surface, setSurface] = useState(editTarget?.surface?.toString() ?? "");
+  const [address, setAddress] = useState(editTarget?.address ?? "");
+  const [furnished, setFurnished] = useState(editTarget?.furnished ?? false);
+  const [genderPref, setGenderPref] = useState(editTarget?.gender ?? "Homme");
 
   // Offer room specifics
-  const [currentRoommates, setCurrentRoommates] = useState("");
-  const [maxRoommates, setMaxRoommates] = useState("");
+  const [currentRoommates, setCurrentRoommates] = useState(editTarget?.currentRoommates?.toString() ?? "");
+  const [maxRoommates, setMaxRoommates] = useState(editTarget?.maxRoommates?.toString() ?? "");
 
   // Search coloc fields
-  const [university, setUniversity] = useState("");
-  const [studyField, setStudyField] = useState("");
-  const [duration, setDuration] = useState("");
-  const [bio, setBio] = useState("");
+  const [university, setUniversity] = useState(editTarget?.university ?? "");
+  const [studyField, setStudyField] = useState(editTarget?.studyField ?? "");
+  const [duration, setDuration] = useState(editTarget?.duration ?? "");
+  const [bio, setBio] = useState(editTarget?.bio ?? "");
 
   // Tags
-  const [tags, setTags] = useState<string[]>([]);
+  const [tags, setTags] = useState<string[]>(editTarget?.tags ?? []);
   const allTags = ["Wi-Fi", "Meublé", "Cuisine", "AC", "Parking", "Calme", "Proche campus", "Non-fumeur", "Study Room", "Balcon", "Sécurisé", "Jardin"];
 
   useEffect(() => {
-    if (typeParam) setFormType(typeParam);
-  }, [typeParam]);
+    if (typeParam && !editId) setFormType(typeParam as FormType);
+  }, [typeParam, editId]);
 
   const toggleTag = (tag: string) => {
     setTags(prev => prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]);
   };
 
   const handleSubmit = () => {
+    if (!title.trim() || !city) return;
+    const announcement = {
+      id: editId ?? Date.now(),
+      type: formType,
+      title: title.trim(),
+      description: description.trim(),
+      city,
+      price: price ? `${price} MAD/mois` : "À négocier",
+      housingType: housingType || "Chambre",
+      image: "photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=200&q=80",
+      authorName: userName,
+      authorImage: "photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=100&q=80",
+      phone: editTarget?.phone ?? "0600000000",
+      posted: editId ? (editTarget?.posted ?? "À l'instant") : "À l'instant",
+      tags,
+      gender: genderPref,
+      views: editTarget?.views ?? 0,
+      status: editTarget?.status ?? "active" as const,
+      address,
+      bedrooms: bedrooms ? Number(bedrooms) : undefined,
+      bathrooms: bathrooms ? Number(bathrooms) : undefined,
+      surface: surface ? Number(surface) : undefined,
+      furnished,
+      currentRoommates: currentRoommates ? Number(currentRoommates) : undefined,
+      maxRoommates: maxRoommates ? Number(maxRoommates) : undefined,
+      university,
+      studyField,
+      duration,
+      bio,
+    };
+    if (editId) {
+      updateAnnouncement(announcement);
+    } else {
+      addAnnouncement(announcement);
+    }
     setSubmitted(true);
     setTimeout(() => {
-      navigate("/app");
-    }, 2000);
+      navigate("/app/profile");
+    }, 1500);
   };
 
   if (submitted) {
@@ -65,7 +106,7 @@ export default function AddAnnouncement() {
           <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce">
             <Check size={40} className="text-green-600" />
           </div>
-          <h2 className="text-xl font-bold text-slate-900 mb-2">Annonce publiée !</h2>
+          <h2 className="text-xl font-bold text-slate-900 mb-2">{editId ? "Annonce modifiée !" : "Annonce publiée !"}</h2>
           <p className="text-slate-500 text-sm mb-4">Votre annonce est maintenant visible par tous les utilisateurs.</p>
           <p className="text-xs text-slate-400">Redirection automatique...</p>
         </div>
@@ -90,7 +131,7 @@ export default function AddAnnouncement() {
             <ArrowLeft size={20} className="text-slate-700" />
           </button>
           <h1 className="text-lg font-bold text-slate-900">
-            {formType === "offer-room" ? "J'offre une colocation" : formType === "search-coloc" ? "Je cherche une colocation" : formType === "provider-listing" ? "J'offre un logement" : "Publier une annonce"}
+            {editId ? "Modifier l'annonce" : formType === "offer-room" ? "J'offre une colocation" : formType === "search-coloc" ? "Je cherche une colocation" : formType === "provider-listing" ? "J'offre un logement" : "Publier une annonce"}
           </h1>
         </div>
       </div>
@@ -246,23 +287,13 @@ export default function AddAnnouncement() {
             </div>
 
             {/* Specs grid */}
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="text-[10px] font-semibold text-slate-400 uppercase mb-1 block">Chambres</label>
                 <input
                   type="number"
                   value={bedrooms}
                   onChange={(e) => setBedrooms(e.target.value)}
-                  placeholder="0"
-                  className="w-full bg-white px-3 py-2.5 rounded-xl border border-gray-200 text-sm text-center outline-none focus:border-blue-400"
-                />
-              </div>
-              <div>
-                <label className="text-[10px] font-semibold text-slate-400 uppercase mb-1 block">SDB</label>
-                <input
-                  type="number"
-                  value={bathrooms}
-                  onChange={(e) => setBathrooms(e.target.value)}
                   placeholder="0"
                   className="w-full bg-white px-3 py-2.5 rounded-xl border border-gray-200 text-sm text-center outline-none focus:border-blue-400"
                 />
@@ -377,7 +408,7 @@ export default function AddAnnouncement() {
         <div>
           <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 block">Préférence sexe</label>
           <div className="flex space-x-2">
-            {["Homme", "Femme", "Mixte"].map(g => (
+            {["Homme", "Femme"].map(g => (
               <button
                 key={g}
                 onClick={() => setGenderPref(g)}
@@ -412,9 +443,10 @@ export default function AddAnnouncement() {
         {/* Submit */}
         <button
           onClick={handleSubmit}
-          className="w-full bg-blue-600 text-white py-3.5 rounded-xl font-bold text-sm hover:bg-blue-700 transition-colors shadow-lg shadow-blue-600/20 mt-2"
+          disabled={!title.trim() || !city}
+          className="w-full bg-blue-600 text-white py-3.5 rounded-xl font-bold text-sm hover:bg-blue-700 transition-colors shadow-lg shadow-blue-600/20 mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Publier l'annonce
+          {editId ? "Enregistrer les modifications" : "Publier l'annonce"}
         </button>
       </div>
     </div>

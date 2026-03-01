@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
-import { Search, MapPin, Users, BedDouble, Filter, X, ChevronDown, Building2, UserPlus, Home } from "lucide-react";
+import { Search, MapPin, Users, BedDouble, Filter, X, ChevronDown, Building2, UserPlus, Home, Phone, MessageCircle } from "lucide-react";
 import { useUser } from "../context/UserContext";
 
 type AnnouncementType = "all" | "offer-room" | "search-coloc" | "provider-listing";
@@ -19,22 +19,35 @@ interface Announcement {
   posted: string;
   tags: string[];
   gender?: string;
+  phone?: string;
 }
 
 const allAnnouncements: Announcement[] = [
   // Offer room (student has a room)
-  { id: 1, type: "offer-room", title: "Chambre meublée près FST", description: "Chambre privée dans un appartement partagé, ambiance calme.", city: "Errachidia", price: "750 MAD/mois", housingType: "Chambre", image: "photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80", authorName: "Youssef B.", authorImage: "photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=100&q=80", posted: "2h", tags: ["Wi-Fi", "Meublé", "Cuisine"], gender: "Homme" },
-  { id: 2, type: "offer-room", title: "Studio partagé 2 personnes", description: "Studio spacieux à partager avec un(e) étudiant(e) sérieux(se).", city: "Errachidia", price: "600 MAD/mois", housingType: "Studio", image: "photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80", authorName: "Fatima Z.", authorImage: "photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=100&q=80", posted: "5h", tags: ["Calme", "Proche campus"], gender: "Femme" },
-  { id: 3, type: "offer-room", title: "Coloc moderne centre-ville", description: "Grand appartement, 2 places libres, tout équipé.", city: "Errachidia", price: "900 MAD/mois", housingType: "Appartement", image: "photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=800&q=80", authorName: "Karim T.", authorImage: "photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&q=80", posted: "1j", tags: ["AC", "Wi-Fi", "Parking"], gender: "Mixte" },
+  { id: 1, type: "offer-room", title: "Chambre meublée près FST", description: "Chambre privée dans un appartement partagé, ambiance calme.", city: "Errachidia", price: "750 MAD/mois", housingType: "Chambre", image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80", authorName: "Youssef B.", authorImage: "photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=100&q=80", posted: "2h", tags: ["Wi-Fi", "Meublé", "Cuisine"], gender: "Homme" },
+  { id: 2, type: "offer-room", title: "Studio partagé 2 personnes", description: "Studio spacieux à partager avec un(e) étudiant(e) sérieux(se).", city: "Errachidia", price: "600 MAD/mois", housingType: "Studio", image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80", authorName: "Fatima Z.", authorImage: "photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=100&q=80", posted: "5h", tags: ["Calme", "Proche campus"], gender: "Femme" },
+  { id: 3, type: "offer-room", title: "Coloc moderne centre-ville", description: "Grand appartement, 2 places libres, tout équipé.", city: "Errachidia", price: "900 MAD/mois", housingType: "Appartement", image: "https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=800&q=80", authorName: "Karim T.", authorImage: "photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&q=80", posted: "1j", tags: ["AC", "Wi-Fi", "Parking"], gender: "Men" },
   // Search coloc (student looking)
-  { id: 10, type: "search-coloc", title: "Cherche colocation près FST", description: "Étudiant en informatique, calme et sérieux, cherche colocation meublée.", city: "Errachidia", price: "800 MAD/mois", housingType: "Chambre", image: "photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=100&q=80", authorName: "Youssef B.", authorImage: "photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=100&q=80", posted: "2h", tags: ["Wi-Fi", "Non-fumeur", "Calme"], gender: "Homme" },
-  { id: 11, type: "search-coloc", title: "Étudiante cherche logement", description: "Étudiante en lettres cherche chambre meublée avec study room.", city: "Errachidia", price: "600 MAD/mois", housingType: "Chambre", image: "photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=100&q=80", authorName: "Fatima Z.", authorImage: "photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=100&q=80", posted: "5h", tags: ["Meublé", "Study Room"], gender: "Femme" },
-  { id: 12, type: "search-coloc", title: "Cherche coloc sympa", description: "Étudiante en physique cherche colocation abordable près du campus.", city: "Errachidia", price: "700 MAD/mois", housingType: "Chambre", image: "photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&q=80", authorName: "Amina L.", authorImage: "photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&q=80", posted: "1j", tags: ["Wi-Fi", "Cuisine"], gender: "Femme" },
+  { id: 10, type: "search-coloc", title: "Cherche colocation près FST", description: "Étudiant en informatique, calme et sérieux, cherche colocation meublée.", city: "Errachidia", price: "800 MAD/mois", housingType: "Chambre", image: "photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=100&q=80", authorName: "Youssef B.", authorImage: "photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=100&q=80", posted: "2h", tags: ["Wi-Fi", "Non-fumeur", "Calme"], gender: "Homme", phone: "0600123456" },
+  { id: 11, type: "search-coloc", title: "Étudiante cherche logement", description: "Étudiante en lettres cherche chambre meublée avec study room.", city: "Errachidia", price: "600 MAD/mois", housingType: "Chambre", image: "photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=100&q=80", authorName: "Fatima Z.", authorImage: "photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=100&q=80", posted: "5h", tags: ["Meublé", "Study Room"], gender: "Femme", phone: "0600234567" },
+  { id: 12, type: "search-coloc", title: "Cherche coloc sympa", description: "Étudiante en physique cherche colocation abordable près du campus.", city: "Errachidia", price: "700 MAD/mois", housingType: "Chambre", image: "photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&q=80", authorName: "Amina L.", authorImage: "photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&q=80", posted: "1j", tags: ["Wi-Fi", "Cuisine"], gender: "Femme", phone: "0600456789" },
   // Provider listings
-  { id: 20, type: "provider-listing", title: "Appartement F3 meublé centre", description: "Bel appartement de 3 pièces, entièrement meublé et équipé. Idéal pour 2-3 étudiants.", city: "Errachidia", price: "2000 MAD/mois", housingType: "Appartement", image: "photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80", authorName: "Agence ImmoPlus", authorImage: "photo-1560179707-f14e90ef3623?auto=format&fit=crop&w=100&q=80", posted: "3j", tags: ["Meublé", "Parking", "AC"] },
-  { id: 21, type: "provider-listing", title: "Chambre privée avec balcon", description: "Chambre individuelle dans résidence sécurisée, avec balcon et vue dégagée.", city: "Errachidia", price: "1500 MAD/mois", housingType: "Chambre", image: "photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=800&q=80", authorName: "Omar H.", authorImage: "photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=100&q=80", posted: "5j", tags: ["Sécurisé", "Balcon"] },
-  { id: 22, type: "provider-listing", title: "Maison pour étudiants", description: "Grande maison 5 chambres, jardin, parking. Idéale pour groupe d'étudiants.", city: "Errachidia", price: "4000 MAD/mois", housingType: "Maison", image: "photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80", authorName: "Propriétaire Direct", authorImage: "photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=100&q=80", posted: "1 sem", tags: ["Jardin", "Parking", "5 chambres"] },
+  { id: 20, type: "provider-listing", title: "Appartement F3 meublé centre", description: "Bel appartement de 3 pièces, entièrement meublé et équipé. Idéal pour 2-3 étudiants.", city: "Errachidia", price: "2000 MAD/mois", housingType: "Appartement", image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80", authorName: "Agence ImmoPlus", authorImage: "photo-1560179707-f14e90ef3623?auto=format&fit=crop&w=100&q=80", posted: "3j", tags: ["Meublé", "Parking", "AC"] },
+  { id: 21, type: "provider-listing", title: "Chambre privée avec balcon", description: "Chambre individuelle dans résidence sécurisée, avec balcon et vue dégagée.", city: "Errachidia", price: "1500 MAD/mois", housingType: "Chambre", image: "https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=800&q=80", authorName: "Omar H.", authorImage: "photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=100&q=80", posted: "5j", tags: ["Sécurisé", "Balcon"] },
+  { id: 22, type: "provider-listing", title: "Maison pour étudiants", description: "Grande maison 5 chambres, jardin, parking. Idéale pour groupe d'étudiants.", city: "Errachidia", price: "4000 MAD/mois", housingType: "Maison", image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80", authorName: "Propriétaire Direct", authorImage: "photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=100&q=80", posted: "1 sem", tags: ["Jardin", "Parking", "5 chambres"] },
 ];
+
+const CONVS_KEY = "talab_conversations";
+
+function saveContact(id: number, name: string, avatar: string, title: string) {
+  try {
+    const stored = JSON.parse(localStorage.getItem(CONVS_KEY) || "[]") as { id: number; name: string; avatar: string; online: boolean; lastMessage: string; time: string; unread: number }[];
+    if (!stored.some((c) => c.id === id)) {
+      stored.unshift({ id, name, avatar, online: false, lastMessage: `À propos : ${title}`, time: "maintenant", unread: 0 });
+      localStorage.setItem(CONVS_KEY, JSON.stringify(stored));
+    }
+  } catch {}
+}
 
 const cities = ["Toutes", "Errachidia", "Ouarzazate", "Meknès", "Fès", "Rabat"];
 const housingTypes = ["Tous", "Chambre", "Studio", "Appartement", "Maison"];
@@ -42,7 +55,7 @@ const budgetRanges = ["Tous", "< 500 MAD", "500-1000 MAD", "1000-2000 MAD", "> 2
 
 export default function Announcements() {
   const navigate = useNavigate();
-  const { role } = useUser();
+  const { role, studentAnnouncements, providerAnnouncements } = useUser();
   const [showFilters, setShowFilters] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState<AnnouncementType>("all");
@@ -50,6 +63,14 @@ export default function Announcements() {
   const [selectedType, setSelectedType] = useState("Tous");
   const [selectedBudget, setSelectedBudget] = useState("Tous");
   const [selectedGender, setSelectedGender] = useState("Tous");
+
+  /* Merge context announcements with static base data (context items take priority / deduplicated by id) */
+  const contextIds = new Set([...studentAnnouncements, ...providerAnnouncements].map(a => a.id));
+  const staticBase = allAnnouncements.filter(a => !contextIds.has(a.id));
+  const mergedAnnouncements: Announcement[] = [
+    ...[...studentAnnouncements, ...providerAnnouncements] as Announcement[],
+    ...staticBase,
+  ];
 
   /* Tabs adaptés au rôle :
      - Étudiant : voit logements dispo (offer-room + provider-listing) + cherchent coloc
@@ -68,10 +89,10 @@ export default function Announcements() {
 
   /* Filtrer selon le rôle avant d'appliquer les filtres utilisateur */
   const roleFiltered = role === "provider"
-    ? allAnnouncements.filter(a => a.type === "search-coloc")
-    : allAnnouncements;
+    ? mergedAnnouncements.filter(a => a.type === "search-coloc")
+    : mergedAnnouncements;
 
-  const filtered = roleFiltered.filter((a) => {
+  const filtered = roleFiltered.filter((a: Announcement) => {
     if (activeTab !== "all" && a.type !== activeTab) return false;
     if (selectedCity !== "Toutes" && a.city !== selectedCity) return false;
     if (selectedType !== "Tous" && a.housingType !== selectedType) return false;
@@ -112,7 +133,7 @@ export default function Announcements() {
       <div className="bg-white sticky top-0 z-20 shadow-sm">
         <div className="px-6 pt-4 pb-3">
           <div className="flex items-center justify-between mb-3">
-            <h1 className="text-xl font-bold text-slate-900">{role === "provider" ? "Demandes étudiantes" : "Annonces"}</h1>
+            <h1 className="text-xl font-bold text-slate-900">{role === "provider" ? "Cherchent un logement" : "Annonces"}</h1>
             <button
               onClick={() => setShowFilters(!showFilters)}
               className={`flex items-center space-x-1.5 px-3 py-2 rounded-xl text-sm font-semibold transition-colors ${
@@ -141,23 +162,25 @@ export default function Announcements() {
             />
           </div>
 
-          {/* Tabs */}
-          <div className="flex space-x-2 overflow-x-auto scrollbar-hide -mx-6 px-6 pb-1">
-            {allTabs.map((tab) => (
-              <button
-                key={tab.key}
-                onClick={() => setActiveTab(tab.key)}
-                className={`flex items-center space-x-1.5 px-3.5 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-colors ${
-                  activeTab === tab.key
-                    ? "bg-blue-600 text-white"
-                    : "bg-gray-100 text-slate-600 hover:bg-gray-200"
-                }`}
-              >
-                <tab.icon size={14} />
-                <span>{tab.label}</span>
-              </button>
-            ))}
-          </div>
+          {/* Tabs - only for students */}
+          {role !== "provider" && (
+            <div className="flex space-x-2 overflow-x-auto scrollbar-hide -mx-6 px-6 pb-1">
+              {allTabs.map((tab) => (
+                <button
+                  key={tab.key}
+                  onClick={() => setActiveTab(tab.key)}
+                  className={`flex items-center space-x-1.5 px-3.5 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-colors ${
+                    activeTab === tab.key
+                      ? "bg-blue-600 text-white"
+                      : "bg-gray-100 text-slate-600 hover:bg-gray-200"
+                  }`}
+                >
+                  <tab.icon size={14} />
+                  <span>{tab.label}</span>
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
@@ -227,7 +250,7 @@ export default function Announcements() {
           <div>
             <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 block">Préférence sexe</label>
             <div className="flex flex-wrap gap-2">
-              {["Tous", "Homme", "Femme", "Mixte"].map((g) => (
+              {["Tous", "Homme", "Femme"].map((g) => (
                 <button
                   key={g}
                   onClick={() => setSelectedGender(g)}
@@ -264,7 +287,7 @@ export default function Announcements() {
                 {!isProfile ? (
                   <>
                     <div className="h-40 relative">
-                      <img src={`https://images.unsplash.com/${a.image}`} alt={a.title} className="w-full h-full object-cover" />
+                      <img src={a.image} alt={a.title} className="w-full h-full object-cover" />
                       <div className={`absolute top-2 left-2 px-2.5 py-1 rounded-lg text-[11px] font-bold ${badge.bg}`}>{badge.label}</div>
                       <div className="absolute bottom-2 right-2 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-lg text-xs font-bold text-slate-900">{a.price}</div>
                     </div>
@@ -291,7 +314,6 @@ export default function Announcements() {
                       <div className="flex-1">
                         <div className="flex items-center justify-between mb-1">
                           <h3 className="text-sm font-bold text-slate-900">{a.authorName}</h3>
-                          <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${badge.bg}`}>{badge.label}</span>
                         </div>
                         <p className="text-xs text-slate-600 font-medium mb-1">{a.title}</p>
                         <p className="text-xs text-slate-400 mb-2 line-clamp-2">{a.description}</p>
@@ -302,6 +324,12 @@ export default function Announcements() {
                           </div>
                           <span className="text-[10px] text-slate-400">{a.posted}</span>
                         </div>
+                        {a.phone && (
+                          <div className="flex items-center space-x-1 mt-1.5 text-xs text-slate-500">
+                            <Phone size={11} className="text-slate-400" />
+                            <span className="font-medium text-slate-700">{a.phone}</span>
+                          </div>
+                        )}
                         <div className="flex flex-wrap gap-1 mt-2">
                           {a.tags.map(t => (
                             <span key={t} className="px-2 py-0.5 bg-blue-50 rounded-full text-[10px] text-blue-600 font-medium">{t}</span>
@@ -309,6 +337,18 @@ export default function Announcements() {
                         </div>
                       </div>
                     </div>
+                    {role === "provider" && a.phone && (
+                      <div className="flex space-x-2 mt-3 pt-3 border-t border-gray-100" onClick={(e) => e.stopPropagation()}>
+                        <a href={`tel:${a.phone}`} className="flex-1 bg-green-50 border border-green-200 text-green-700 py-2.5 rounded-xl text-xs font-bold hover:bg-green-100 transition-colors flex items-center justify-center space-x-1">
+                          <Phone size={13} />
+                          <span>Appeler</span>
+                        </a>
+                        <button onClick={() => { saveContact(a.id, a.authorName, a.authorImage, a.title); navigate(`/app/chat/${a.id}`); }} className="flex-1 bg-indigo-600 text-white py-2.5 rounded-xl text-xs font-bold hover:bg-indigo-700 transition-colors flex items-center justify-center space-x-1">
+                          <MessageCircle size={13} />
+                          <span>Message</span>
+                        </button>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
